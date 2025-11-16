@@ -34,6 +34,7 @@ export async function verificationLinkService(email:string) {
             await tx.token.create({
                 data: {
                     token: token,
+                    expires_at: new Date(Date.now() + 10 * 60 * 1000)
                 }
             });
 
