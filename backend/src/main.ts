@@ -3,6 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import errorMiddleware from "./middlewares/error.middleware";
 import router from "./routes";
+import "./services/cleanup"
 
 const app = express();
 
