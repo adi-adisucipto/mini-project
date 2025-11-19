@@ -17,26 +17,57 @@ model Token {
 }
 
 model User {
-  user_id        String  @id @default(uuid())
-  username       String
-  email          String  @unique
-  password       String
-  role           Role    @default(USER)
-  avatar         String?
-  avatar_id      String?
-  referral_code  String
-  referrerId      String? @map("referrer_user_id")
-  points_balance Int     @default(0)
-  created_at     DateTime @default(now())
+  user_id String @id @default(uuid())
+  username String @unique
+  email String @unique
+  password String
+  role Role @default(CUSTOMER)
+  avatar String?
+  avatar_id String?
+  referral_code String @unique
+  referrerId String?
+  points_balance Int @default(0)
+  created_at DateTime @default(now())
 
   referrer User? @relation("ReferredBy", fields: [referrerId], references: [user_id])
-  referredUser User[] @relation("ReferredBy")
+  referredUsers User[] @relation("ReferredBy")
+
+  pointHistory PointTransactions[]
+  coupon Coupon[]
 
   @@map("users")
 }
 
 enum Role {
-  USER
+  CUSTOMER
+  ORGANIZER
   ADMIN
-  ORGANAIZER
+}
+
+model PointTransactions {
+  point_history_id String @id @default(uuid())
+  user_id String
+  amount_change Int
+  point_remaining Int
+  created_at DateTime @default(now())
+  expiration_date DateTime
+
+  user User @relation(fields: [user_id], references: [user_id])
+
+  @@map("point_transactions")
+}
+
+model Coupon {
+  coupon_id String @id @default(uuid())
+  user_id String
+  code String @unique
+  discount_amount Decimal
+  expiration_date DateTime
+  is_used Boolean
+  used_at DateTime
+  created_at DateTime @default(now())
+
+  user User @relation(fields: [user_id], references: [user_id])
+
+  @@map("coupon")
 }
