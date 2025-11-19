@@ -1,7 +1,9 @@
 import { Request, Response, NextFunction } from "express";
 import { Token } from "../middlewares/auth.middleware";
-import { verificationLinkService, verify } from "../services/auth.service";
+import { verificationLinkService, verifyService } from "../services/auth.service";
 import { generateReferralCode } from "../utils/generateReferralCode";
+import { verify } from "jsonwebtoken";
+import { SECRET_KEY } from "../configs/env.config";
 
 export async function verificationLinkController(
     req: Request,
@@ -10,7 +12,6 @@ export async function verificationLinkController(
 ) {
     try {
         const { email } = req.body;
-        console.log(req.body)
         await verificationLinkService(email);
 
         res.json({
@@ -23,20 +24,21 @@ export async function verificationLinkController(
 
 export async function verifyController(req:Request, res:Response, next:NextFunction) {
     try {
-        const authHeader = req.headers.authorization as string;
-        const token = authHeader.split(" ")[1];
+        const token = req.params.token
+        console.log(token)
 
-        const { email } = req.user as Token;
+        const decoded = verify(token, SECRET_KEY) as { email: string };
+        const { email } = decoded;
         const file = req.file;
         const { username, password, referrerCode, role } = req.body;
 
         const referral_code = generateReferralCode();
 
-        await verify(token, {email, username, password, role, referral_code}, file, referrerCode);
+        await verifyService(token, {email, username, password, role, referral_code}, file, referrerCode);
 
-        res.json({
+        res.status(200).json({
             message: "User registered successfully"
-        })
+        });
     } catch (error) {
         next(error);
     }

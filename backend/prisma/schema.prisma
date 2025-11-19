@@ -21,7 +21,7 @@ model User {
   username String @unique
   email String @unique
   password String
-  role Role @default(CUSTOMER)
+  role Role @default(USER)
   avatar String?
   avatar_id String?
   referral_code String @unique
@@ -39,7 +39,7 @@ model User {
 }
 
 enum Role {
-  CUSTOMER
+  USER
   ORGANIZER
   ADMIN
 }

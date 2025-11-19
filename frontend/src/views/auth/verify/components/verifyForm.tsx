@@ -14,31 +14,43 @@ function VerifyForm() {
     const paramValue = searchParams.get("token");
     const { enqueueSnackbar } = useSnackbar();
 
-
     const formik = useFormik({
         initialValues: {
-            email: "",
             username: "",
             password: "",
             referrerCode: "",
             role: 'USER',
-            avatar: null
+            avatar: null,
+            token: ""
         },
         onSubmit: async () => {
-            const { username, password, referrerCode, avatar } = formik.values;
-            const formData = new FormData;
+            const { username, password, referrerCode, avatar, role } = formik.values;
+            const formData = new FormData();
 
             try {
-                if(avatar) {
-                    formData.append('avatar', avatar);
-                }
+                if(avatar) formData.append('avatar', avatar);
                 formData.append('username', username);
-                formData.append('email', paramValue as string);
                 formData.append('password', password);
-                formData.append('referrerCode', referrerCode);
+                if(referrerCode) formData.append('referrerCode', referrerCode);
+                // formData.append('token', paramValue as string);
+                formData.append('role', role);
 
-                const res = await axios.post("http://localhost:8000/api/auth/register", formData);
-                enqueueSnackbar(res.data, { variant: "success" });
+                const res = await axios.post(`http://localhost:8000/api/auth/verify/${paramValue}`, formData 
+                    // {
+                    //     headers: {
+                    //         Authorization: `Bearer ${paramValue}`
+                    //     }
+                    // }
+                );
+
+                let successMessage = "Pendaftaran berhasil! Silakan login."; 
+                if (res.data && res.data.message) { 
+                    successMessage = res.data.message;
+                } else if (res.status === 204) {
+                    console.log("Server merespons 204. Menggunakan pesan sukses default.");
+                }
+
+                enqueueSnackbar(successMessage, { variant: "success" });
                 return res;
             } catch (error) {
                 if(error instanceof Error) {
@@ -54,7 +66,7 @@ function VerifyForm() {
     useEffect(() => {
         if(formik.values.avatar) {
             const url = URL.createObjectURL(formik.values.avatar);
-            console.log(formik.values.avatar)
+            console.log(formik.values.avatar);
             setImageUrl(url);
             return () => URL.revokeObjectURL(url);
         } else {
@@ -99,17 +111,17 @@ function VerifyForm() {
                         }}
                         onDrop={handleDrop}
                     >
+                        <div className=" bg-slate-200 w-full h-full rounded-full flex justify-center items-center">
+                            <User size={30}/>
+                        </div>
                         <input 
                             type="file" 
                             ref={fileInputRef} 
                             onChange={handleFileChange} 
                             accept="image/*" 
-                            name="avatar" // Harus sesuai dengan nama Formik initialValues
+                            name="avatar"
                             className="hidden"
                         />
-                        <div className=" bg-slate-200 w-full h-full rounded-full flex justify-center items-center">
-                            <User size={30}/>
-                        </div>
                     </div>
                 ) : (
                     <div className="w-12 h-12 rounded-full border-2 border-blue-200"
@@ -134,7 +146,7 @@ function VerifyForm() {
                             ref={fileInputRef} 
                             onChange={handleFileChange} 
                             accept="image/*" 
-                            name="avatar" // Harus sesuai dengan nama Formik initialValues
+                            name="avatar"
                             className="hidden"
                         />
                     </div>
@@ -198,8 +210,8 @@ function VerifyForm() {
                         <input 
                             type="radio" 
                             {...roleProps}
-                            value="ORGANAIZER"
-                            checked={formik.values.role === 'ORGANAIZER'}
+                            value="ORGANIZER"
+                            checked={formik.values.role === 'ORGANIZER'}
                             className="peer hidden"
                         />
                         
