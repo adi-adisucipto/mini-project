@@ -32,8 +32,32 @@ model User {
   referrer User? @relation("ReferredBy", fields: [referrerId], references: [user_id])
   referredUser User[] @relation("ReferredBy")
 
+  events       Event[]
+
   @@map("users")
 }
+
+model Event {
+  event_id        String      @id @default(uuid())
+  organizer_id    String
+  name            String
+  description     String
+  price           Int
+  start_date      DateTime
+  end_date        DateTime
+  available_seats Int
+  total_seats     Int
+  category        String
+  location        String
+  is_paid         Boolean  @default(true)
+  created_at      DateTime @default(now())
+
+  organizer       User     @relation(fields: [organizer_id], references: [user_id])
+
+  @@map("events")
+}
+
+
 
 enum Role {
   USER
