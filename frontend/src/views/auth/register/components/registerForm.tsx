@@ -49,7 +49,7 @@ function RegisterFrom() {
 
                     <button
                         type="submit"
-                        className="w-full bg-green-500 py-2 rounded-lg font-bold cursor-pointer hover:bg-green-400">
+                        className="mt-6 w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition">
                             Send Email Verification
                     </button>
                 </Form>
