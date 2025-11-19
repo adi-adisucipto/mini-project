@@ -104,7 +104,7 @@ export async function createPointTransaction(user_id:string) {
     }
 }
 
-export async function createCoupon(user_id:string, username:string, tx:Prisma.TransactionClient) {
+export async function createCoupon(user_id:string, username:string) {
     try {
         const code = () => {
             const rand = Math.floor(Math.random() * 1000000);
@@ -130,7 +130,7 @@ export async function createCoupon(user_id:string, username:string, tx:Prisma.Tr
     }
 }
 
-export async function verify(token:string, params:Prisma.UserUncheckedCreateInput, file?:Express.Multer.File, referrerCode?:string) {
+export async function verifyService(token:string, params:Prisma.UserUncheckedCreateInput, file?:Express.Multer.File, referrerCode?:string) {
     let secure_url: string | null = null;
     let public_id: string | null = null;
 
@@ -143,6 +143,7 @@ export async function verify(token:string, params:Prisma.UserUncheckedCreateInpu
     try {
         const tokenExist = await getRegisterToken(token);
         if(!tokenExist) throw createCustomError(403, "Invalid token");
+        console.log(token)
 
         let userReferrerId: string | null = null;
 
@@ -150,7 +151,6 @@ export async function verify(token:string, params:Prisma.UserUncheckedCreateInpu
             const isRefExist = await getUserByReferral(referrerCode);
             if(!isRefExist) throw new Error("Referral code invalid!");
             userReferrerId = isRefExist.user_id;
-            await createPointTransaction(userReferrerId);
         }
 
         const salt = genSaltSync(10);
@@ -167,8 +167,9 @@ export async function verify(token:string, params:Prisma.UserUncheckedCreateInpu
                 }
             });
             
-            if(referrerCode) {
-                await createCoupon(newUser.user_id, newUser.username, tx)
+            if(referrerCode && userReferrerId) {
+                await createCoupon(newUser.user_id, newUser.username);
+                await createPointTransaction(userReferrerId);
             }
         })
     } catch (error) {
