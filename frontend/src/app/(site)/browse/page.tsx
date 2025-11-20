@@ -7,7 +7,7 @@ type Event = {
   event_id: string;
   name: string;
   location: string;
-  start_date: string; // DateTime comes as ISO string in JSON
+  start_date: string;
   price: number;
   is_paid: boolean;
 };
