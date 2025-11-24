@@ -1,7 +1,7 @@
 // src/app/(site)/browse/page.tsx
 
-console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
-
+//console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+import { LocationFilter } from "./LocationFilter";
 
 type Event = {
   event_id: string;
@@ -12,20 +12,32 @@ type Event = {
   is_paid: boolean;
 };
 
-export default async function BrowsePage({
-  searchParams,
-}: {
-  searchParams: { search?: string };
-}) {
-  const search = searchParams.search ?? "";
+interface BrowsePageProps {
+  searchParams: Promise<{ search?: string, location?: string; }>; //ini harus pake promise and await btw, km error karna no await yg bisa render
+}
+
+export default async function BrowsePage({ searchParams }: BrowsePageProps) {
+  const sp = await searchParams;
+  const search = sp.search ?? "";
+  const location = sp.location ??"";
 
   const params = new URLSearchParams();
   if (search) params.set("search", search);
+  if (location) params.set("location", location);
 
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/events?${params.toString()}`,
-    { cache: "no-store" }
-  );
+  const apiBase = process.env.NEXT_PUBLIC_API_URL;
+  if (!apiBase) {
+    console.error("NEXT_PUBLIC_API_URL is not set");
+  }
+
+  const url = `${process.env.NEXT_PUBLIC_API_URL}/events${
+    params.toString() ? `?${params}` : ""
+  }`;
+
+  console.log("Fetching events from:", url);
+
+  const res = await fetch(url, { cache: "no-store" });
+
 
   if (!res.ok) {
     return (
@@ -41,16 +53,24 @@ export default async function BrowsePage({
   const events: Event[] = await res.json();
 
   return (
+
     <main className="mx-auto mt-10 w-full max-w-6xl px-6 pb-16">
-      <h2 className="mb-4 text-lg font-semibold text-gray-700">
-        Search results
-        {search && <> for "<span className="font-semibold">{search}</span>"</>}
-      </h2>
+      <LocationFilter selected={location} />
+    <h2 className="mb-4 text-lg font-semibold text-gray-700">
+      Search results
+      {search && <> for "<span className="font-semibold">{search}</span>"</>}
+      {location && (
+        <>
+          {search ? " and" : " for"} location "
+          <span className="font-semibold">{location}</span>"
+        </>
+      )}
+    </h2>
 
       {events.length === 0 ? (
         <p className="text-sm text-gray-500">No events found.</p>
       ) : (
-        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
+        <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 text-gray-800">
           {events.map((event) => (
             <article
               key={event.event_id}
@@ -66,7 +86,7 @@ export default async function BrowsePage({
               <p className="text-xs text-gray-500">{event.location}</p>
               <p className="mt-2 text-xs font-semibold">
                 {event.is_paid
-                  ? `Rp ${event.price.toLocaleString("id-ID")}`
+                  ? `Rp ${event.price.toLocaleString("id-ID")}` //inget harus ini supaya bisa jadi rupiah
                   : "Free"}
               </p>
             </article>
