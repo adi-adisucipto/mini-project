@@ -32,7 +32,7 @@ function VerifyForm() {
                 formData.append('role', role);
                 if(avatar) formData.append("avatar", avatar)
 
-                const res = await axios.post(`http://localhost:8000/api/auth/verify`, formData,
+                const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/verify`, formData,
                     {
                         headers: {
                             Authorization: `Bearer ${paramValue}`

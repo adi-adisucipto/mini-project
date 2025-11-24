@@ -8,7 +8,7 @@ import { DecodedToken } from "@/types/auth";
 
 async function refreshAccessToken(token: JWT) {
     try {
-        const { data } = await axios.post("http://localhost:8000/api/auth/refresh", 
+        const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/refresh`, 
             {
                 refreshToken: token.refreshToken
             }
@@ -52,7 +52,7 @@ const handler = NextAuth({
             },
             async authorize(credentials, req) {
                 try {
-                    const { data } = await axios.post("http://localhost:8000/api/auth/login", {
+                    const { data } = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
                         email: credentials?.email,
                         password: credentials?.password
                     });
