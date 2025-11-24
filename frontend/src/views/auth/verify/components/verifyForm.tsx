@@ -1,16 +1,13 @@
 "use client"
 
 import { useFormik } from "formik"
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios"
-import { useEffect, useRef, useState } from "react"
-import { User } from "lucide-react"
 import { useSnackbar } from "notistack";
 import AvatarUpload from "./AvatarUpload";
 
 function VerifyForm() {
-    const [imageUrl, setImageUrl] = useState<string | null>(null);
-    const fileInputRef = useRef<HTMLInputElement>(null);
+    const router = useRouter()
     const searchParams = useSearchParams();
     const paramValue = searchParams.get("token");
     const { enqueueSnackbar } = useSnackbar();
@@ -44,6 +41,7 @@ function VerifyForm() {
                 );
 
                 enqueueSnackbar(res.data.message, { variant: "success" });
+                router.push("/auth/login")
             } catch (error) {
                 if(error instanceof Error) {
                     console.log(error)

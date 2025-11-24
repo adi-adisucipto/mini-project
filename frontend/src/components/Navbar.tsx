@@ -45,8 +45,8 @@ export default function Navbar() {
         <div className="flex items-center gap-4 text-sm text-gray-700">
           <button onClick={() => router.push("/browse")} className="hover:text-cyan-600">Browse Events</button>
           <button className="hover:text-cyan-600">Create Events</button>
-          <button className="rounded-md border px-3 py-1 hover:text-cyan-600">Login</button>
-          <button className="rounded-md border px-3 py-1 hover:text-cyan-600">Sign up</button>
+          <button onClick={() => router.push("/auth/login")} className="rounded-md border px-3 py-1 hover:text-cyan-600">Login</button>
+          <button onClick={() => router.push("/auth/register")} className="rounded-md border px-3 py-1 hover:text-cyan-600">Sign up</button>
         </div>
       </div>
     </header>
