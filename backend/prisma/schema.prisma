@@ -5,8 +5,6 @@ generator client {
 
 datasource db {
   provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
 }
 
 model Token {
@@ -35,8 +33,32 @@ model User {
   pointHistory PointTransactions[]
   coupon Coupon[]
 
+  events       Event[]
+
   @@map("users")
 }
+
+model Event {
+  event_id        String      @id @default(uuid())
+  organizer_id    String
+  name            String
+  description     String
+  price           Int
+  start_date      DateTime
+  end_date        DateTime
+  available_seats Int
+  total_seats     Int
+  category        String
+  location        String
+  is_paid         Boolean  @default(true)
+  created_at      DateTime @default(now())
+
+  organizer       User     @relation(fields: [organizer_id], references: [user_id])
+
+  @@map("events")
+}
+
+
 
 enum Role {
   USER
