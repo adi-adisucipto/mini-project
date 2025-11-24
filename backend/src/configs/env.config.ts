@@ -8,6 +8,8 @@ const GMAIL_EMAIL = process.env.GMAIL_EMAIL;
 const GMAIL_APP_PASS = process.env.GMAIL_APP_PASS;
 const BASE_WEB_API = process.env.BASE_WEB_API;
 const SECRET_KEY = process.env.SECRET_KEY || '';
+const SECRET_ACCESS_KEY = process.env.SECRET_ACCESS_KEY || "";
+const SECRET_REFRESH_KEY = process.env.SECRET_REFRESH_KEY || "";
 
 export {
     PORT,
@@ -17,5 +19,7 @@ export {
     GMAIL_APP_PASS,
     GMAIL_EMAIL,
     BASE_WEB_API,
-    SECRET_KEY
+    SECRET_KEY,
+    SECRET_ACCESS_KEY,
+    SECRET_REFRESH_KEY
 }

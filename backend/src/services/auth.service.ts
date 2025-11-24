@@ -5,8 +5,8 @@ import prisma from "../lib/prisma";
 import { createCustomError } from "../utils/customError";
 import { transporter } from "../helpers/transporter";
 import { compileRegistrationTemplate } from "../helpers/compileRegistrationTemplate";
-import { SECRET_KEY } from "../configs/env.config";
-import { genSaltSync, hashSync } from "bcrypt";
+import { SECRET_KEY, SECRET_ACCESS_KEY, SECRET_REFRESH_KEY } from "../configs/env.config";
+import { genSaltSync, hashSync, compareSync } from "bcrypt";
 import { cloudinaryUplaod, cloudinaryRemove } from "../utils/cloudinary";
 
 export async function getUserByEmail(email:string) {
@@ -177,5 +177,118 @@ export async function verifyService(token:string, params:Prisma.UserUncheckedCre
             await cloudinaryRemove(public_id)
         }
         throw error
+    }
+}
+
+export async function createRefreshTokens(email:string) {
+    try {
+        const user = await getUserByEmail(email);
+        if(!user) throw new Error("Invalid email or password.");
+
+        const payload = {
+            id: user.user_id,
+            email: user.email,
+            username: user.username,
+            role: user.role,
+            avatar:user.avatar,
+            referral_code:user.referral_code,
+            points_balance:user.points_balance
+        };
+
+        const accessToken = sign(payload, SECRET_ACCESS_KEY, { expiresIn: "10m" });
+        const refreshToken = sign(payload, SECRET_REFRESH_KEY, { expiresIn: "30d" });
+
+        return {
+            user,
+            accessToken,
+            refreshToken
+        }
+    } catch (error) {
+        throw error
+    }
+}
+
+export async function loginService(email:string, password:string) {
+    try {
+        const user = await getUserByEmail(email);
+        if(!user) throw new Error("Invalid email or password.");
+        const passValid = compareSync(password, user.password);
+        if(!passValid) throw new Error("Invalid email or password.");
+
+        const data = await createRefreshTokens(email);
+
+        const exp = new Date();
+        exp.setDate(exp.getDate() + 30);
+
+        const accessToken = data.accessToken;
+        const refreshToken = data.refreshToken;
+
+        await prisma.$transaction(async (tx:Prisma.TransactionClient) => {
+            await tx.refreshToken.deleteMany({
+                where: { token: refreshToken }
+            });
+
+            await tx.refreshToken.create({
+                data: {
+                    user_id: data.user.user_id,
+                    token: data.refreshToken,
+                    expires_at: exp
+                }
+            });
+        });
+
+        return {
+            accessToken,
+            refreshToken
+        }
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function refreshTokenService(token:string) {
+    try {
+        const user = await prisma.refreshToken.findFirst({
+            where: { token: token }
+        });
+        if(!user) throw new Error("Invalid token");
+
+        const findEmail = await prisma.user.findUnique({
+            where: { user_id: user.user_id },
+            select: { email: true }
+        });
+
+        if(findEmail === null) throw new Error();
+
+        const userInfo = await getUserByEmail(findEmail.email);
+        if(!userInfo) throw new Error("Invalid email or password.");
+        const data = await createRefreshTokens(findEmail.email);
+
+        const accessToken = data.accessToken;
+        const refreshToken = data.refreshToken;
+
+        const exp = new Date();
+        exp.setDate(exp.getDate() + 30);
+
+        await prisma.$transaction(async (tx:Prisma.TransactionClient) => {
+            await tx.refreshToken.deleteMany({
+                where: { token: token }
+            });
+
+            await tx.refreshToken.create({
+                data: {
+                    user_id: data.user.user_id,
+                    token: data.refreshToken,
+                    expires_at: exp
+                }
+            });
+        });
+
+        return {
+            accessToken,
+            refreshToken
+        }
+    } catch (error) {
+        throw error;
     }
 }

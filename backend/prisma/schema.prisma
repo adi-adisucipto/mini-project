@@ -1,11 +1,15 @@
 
+
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
   provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
 }
+
 
 model Token {
   id Int @id @default(autoincrement())
@@ -35,7 +39,18 @@ model User {
 
   events       Event[]
 
+  refreshTokens RefreshToken[]
+
   @@map("users")
+}
+
+model RefreshToken {
+  id String @id @default(uuid())
+  user_id String
+  token String
+  expires_at DateTime
+
+  user User @relation(fields: [user_id], references: [user_id])
 }
 
 model Event {
