@@ -6,6 +6,7 @@ import axios from "axios"
 import { useEffect, useRef, useState } from "react"
 import { User } from "lucide-react"
 import { useSnackbar } from "notistack";
+import AvatarUpload from "./AvatarUpload";
 
 function VerifyForm() {
     const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -24,34 +25,25 @@ function VerifyForm() {
             token: ""
         },
         onSubmit: async () => {
-            const { username, password, referrerCode, avatar, role } = formik.values;
-            const formData = new FormData();
-
             try {
-                if(avatar) formData.append('avatar', avatar);
+                const { username, password, referrerCode, avatar, role } = formik.values;
+                const formData = new FormData();
+
                 formData.append('username', username);
                 formData.append('password', password);
                 if(referrerCode) formData.append('referrerCode', referrerCode);
-                // formData.append('token', paramValue as string);
                 formData.append('role', role);
+                if(avatar) formData.append("avatar", avatar)
 
-                const res = await axios.post(`http://localhost:8000/api/auth/verify/${paramValue}`, formData 
-                    // {
-                    //     headers: {
-                    //         Authorization: `Bearer ${paramValue}`
-                    //     }
-                    // }
+                const res = await axios.post(`http://localhost:8000/api/auth/verify`, formData,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${paramValue}`
+                        }
+                    }
                 );
 
-                let successMessage = "Pendaftaran berhasil! Silakan login."; 
-                if (res.data && res.data.message) { 
-                    successMessage = res.data.message;
-                } else if (res.status === 204) {
-                    console.log("Server merespons 204. Menggunakan pesan sukses default.");
-                }
-
-                enqueueSnackbar(successMessage, { variant: "success" });
-                return res;
+                enqueueSnackbar(res.data.message, { variant: "success" });
             } catch (error) {
                 if(error instanceof Error) {
                     console.log(error)
@@ -63,94 +55,12 @@ function VerifyForm() {
         }
     });
 
-    useEffect(() => {
-        if(formik.values.avatar) {
-            const url = URL.createObjectURL(formik.values.avatar);
-            console.log(formik.values.avatar);
-            setImageUrl(url);
-            return () => URL.revokeObjectURL(url);
-        } else {
-            setImageUrl(null);
-        }
-    }, [formik.values.avatar]);
-
-    const handleFileChange = (e:any) => {
-        const file = e.target.files[0];
-        if(file && file.type.startsWith('image/')) {
-            formik.setFieldValue('avatar', file);
-        } else {
-            formik.setFieldValue('avatar', null);
-        }
-    }
-
-    const handleDrop = (e:any) => {
-        e.preventDefault();
-        e.currentTarget.classList.remove('border-indigo-500', 'bg-indigo-50');
-        const file = e.dataTransfer.files[0];
-        if (file) {
-            handleFileChange({ target: { files: [file] } });
-        }
-    }
-
     const roleProps = formik.getFieldProps('role');
   return (
     <div className="h-screen flex justify-center items-center">
         <form onSubmit={formik.handleSubmit} className="flex flex-col gap-5 w-lg bg-slate-50 p-5 rounded-lg">
             <div className="mx-auto">
-                {!imageUrl ? (
-                    <div
-                        className="w-12 h-12 rounded-full flex flex-col justify-center items-center"
-                        onClick={() => fileInputRef.current?.click()}
-                        onDragOver={(e) => {
-                            e.preventDefault();
-                            e.currentTarget.classList.add('border-indigo-500', 'bg-indigo-50');
-                        }}
-                        onDragLeave={(e) => {
-                            e.preventDefault();
-                            e.currentTarget.classList.remove('border-indigo-500', 'bg-indigo-50');
-                        }}
-                        onDrop={handleDrop}
-                    >
-                        <div className=" bg-slate-200 w-full h-full rounded-full flex justify-center items-center">
-                            <User size={30}/>
-                        </div>
-                        <input 
-                            type="file" 
-                            ref={fileInputRef} 
-                            onChange={handleFileChange} 
-                            accept="image/*" 
-                            name="avatar"
-                            className="hidden"
-                        />
-                    </div>
-                ) : (
-                    <div className="w-12 h-12 rounded-full border-2 border-blue-200"
-                        onClick={() => fileInputRef.current?.click()}
-                        onDragOver={(e) => {
-                            e.preventDefault();
-                            e.currentTarget.classList.add('border-indigo-500', 'bg-indigo-50');
-                            }}
-                        onDragLeave={(e) => {
-                            e.preventDefault();
-                            e.currentTarget.classList.remove('border-indigo-500', 'bg-indigo-50');
-                            }}
-                        onDrop={handleDrop}
-                    >
-                        <img 
-                            src={imageUrl} 
-                            alt="Avatar Preview" 
-                            className="w-full h-full rounded-full object-cover" 
-                        />
-                        <input 
-                            type="file" 
-                            ref={fileInputRef} 
-                            onChange={handleFileChange} 
-                            accept="image/*" 
-                            name="avatar"
-                            className="hidden"
-                        />
-                    </div>
-                )}
+                <AvatarUpload avatarValue={formik.values.avatar} setAvatarValue={(file: File | null) => formik.setFieldValue("avatar", file)}/>
             </div>
 
             <input
