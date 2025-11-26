@@ -5,6 +5,7 @@ import errorMiddleware from "./middlewares/error.middleware";
 import router from "./routes";
 import eventsRouter from "./routes/events"
 import "./services/cleanup"
+import "./services/cleanupTransaction"
 
 const app = express();
 

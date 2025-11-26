@@ -65,6 +65,7 @@ export async function loginController(req:Request, res:Response, next:NextFuncti
 export async function refreshTokenController(req:Request, res:Response, next:NextFunction) {
     try {
         const { refreshToken } = req.body.refreshToken;
+        console.log(refreshToken)
         const data = await refreshTokenService(refreshToken);
 
         res.json({
