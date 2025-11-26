@@ -32,15 +32,11 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
     console.error("NEXT_PUBLIC_API_URL is not set");
   }
 
-  const url = `${process.env.NEXT_PUBLIC_API_URL}/events${
-    params.toString() ? `?${params}` : ""
-  }`;
+  const baseUrl = `${process.env.NEXT_PUBLIC_API_URL}/events`;
+  const url = params.toString() ? `${baseUrl}?${params}` : baseUrl;
 
-  console.log("Fetching events from:", url);
-
+  // fetch filtered events yang ini
   const res = await fetch(url, { cache: "no-store" });
-
-
   if (!res.ok) {
     return (
       <main className="mx-auto mt-10 w-full max-w-6xl px-6 pb-16">
@@ -51,13 +47,17 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
       </main>
     );
   }
-
   const events: Event[] = await res.json();
+
+  // fetch all events yang ini 
+  const allRes = await fetch(baseUrl, { cache: "no-store" });
+  const allEvents: Event[] = allRes.ok ? await allRes.json() : [];
+  const locations = Array.from(new Set(allEvents.map((e) => e.location))).sort();
 
   return (
 
     <main className="mx-auto mt-10 w-full max-w-6xl px-6 pb-16">
-      <LocationFilter selected={location} />
+      <LocationFilter selected={location} locations={locations} />
     <h2 className="mb-4 text-lg font-semibold text-gray-700">
       Search results
       {search && <> for "<span className="font-semibold">{search}</span>"</>}

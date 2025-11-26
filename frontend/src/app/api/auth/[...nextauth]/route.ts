@@ -133,6 +133,7 @@ const handler = NextAuth({
             }
 
             return {
+                
                 ...session,
                 accessToken: token.accessToken,
                 refreshToken: token.refreshToken,

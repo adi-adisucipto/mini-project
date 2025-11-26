@@ -38,3 +38,10 @@ export function authMiddleware(req:Request, res:Response, next:NextFunction) {
         next(error);
     }
 }
+
+export function organizerOnly(req: Request, res: Response, next: NextFunction) {
+  if (!req.user || (req.user.role !== "ORGANIZER" && req.user.role !== "ADMIN")) {
+    return next(createCustomError(403, "Organizer only")); // inget the forum where you got this and learn again
+  }
+  next();
+}

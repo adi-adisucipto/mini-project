@@ -3,7 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import errorMiddleware from "./middlewares/error.middleware";
 import router from "./routes";
-import eventsRouter from "./routes/events"
+import eventsRouter from "./routes/event.router"
 import "./services/cleanup"
 import "./services/cleanupTransaction"
 
@@ -19,6 +19,7 @@ app.use("/api", router);
 app.use(errorMiddleware)
 
 app.use("/api/events", eventsRouter); //buat link events
+//check this pindah ke index *
 
 
 app.listen(8000, () => {
