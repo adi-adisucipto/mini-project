@@ -18,7 +18,7 @@ export async function getEventsController(req: AuthedRequest, res: Response, nex
 
 export async function createEventController(req: AuthedRequest, res: Response, next: NextFunction) {
   try {
-    const organizer_id = req.user?.user_id || req.user?.id || req.body.organizer_id;
+    const organizer_id = req.user?.id || req.user?.id || req.body.organizer_id;
     if (!organizer_id) throw createCustomError(401, "Organizer is required");
 
     const {
