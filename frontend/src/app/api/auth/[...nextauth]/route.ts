@@ -131,7 +131,10 @@ const handler = NextAuth({
             }
 
             return {
+                
                 ...session,
+                accessToken: token.accessToken,
+                refreshToken: token.refreshToken,
                 user: {
                     id:token.id,
                     email: token.email,
@@ -140,8 +143,7 @@ const handler = NextAuth({
                     avatar: token.avatar,
                     points_balance: token.points_balance,
                     referral_code: token.referral_code,
-                    accessToken: token.accessToken,
-                    refreshToken: token.refreshToken
+                    
                 }
             }
         }
