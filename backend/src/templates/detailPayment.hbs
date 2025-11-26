@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detail Pembayaran</title>
+    <style>
+        /* Reset CSS dasar untuk Email */
+        body { margin: 0; padding: 0; background-color: #f4f4f4; font-family: Arial, sans-serif; }
+        table { border-spacing: 0; }
+        td { padding: 0; }
+        img { border: 0; }
+        
+        /* Container Utama */
+        .wrapper { width: 100%; table-layout: fixed; background-color: #f4f4f4; padding-bottom: 40px; }
+        .main-content { background-color: #ffffff; margin: 0 auto; width: 100%; max-width: 600px; border-spacing: 0; font-family: sans-serif; color: #333333; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        
+        /* Styling Elemen */
+        .header { background-color: #2c3e50; padding: 20px; text-align: center; }
+        .header h1 { color: #ffffff; margin: 0; font-size: 24px; }
+        .content { padding: 30px; }
+        .invoice-details { width: 100%; margin-top: 20px; margin-bottom: 20px; border-collapse: collapse; }
+        .invoice-details th { text-align: left; padding: 10px; background-color: #f8f9fa; border-bottom: 2px solid #dee2e6; color: #666; font-size: 12px; text-transform: uppercase; }
+        .invoice-details td { padding: 12px 10px; border-bottom: 1px solid #eee; }
+        .total-row td { font-weight: bold; background-color: #f8f9fa; border-bottom: none; color: #2c3e50; }
+        
+        /* Tombol */
+        .btn { display: inline-block; padding: 12px 24px; background-color: #3498db; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold; margin-top: 20px; }
+        .btn:hover { background-color: #2980b9; }
+        
+        /* Footer */
+        .footer { text-align: center; padding: 20px; color: #999999; font-size: 12px; }
+        .footer a { color: #999999; text-decoration: underline; }
+
+        /* Mobile Responsive */
+        @media screen and (max-width: 600px) {
+            .content { padding: 20px; }
+            .invoice-details th, .invoice-details td { display: block; width: 100%; box-sizing: border-box; }
+            .invoice-details th { display: none; } /* Sembunyikan header tabel di HP agar lebih bersih */
+            .invoice-details td { text-align: right; padding-left: 50%; position: relative; }
+            .invoice-details td::before { content: attr(data-label); position: absolute; left: 0; width: 45%; padding-left: 10px; font-weight: bold; text-align: left; }
+        }
+    </style>
+</head>
+<body>
+
+    <center class="wrapper">
+        <table class="main-content">
+            <tr>
+                <td class="header">
+                    <h1>Detail Pembayaran</h1> 
+                </td>
+            </tr>
+
+            <tr>
+                <td class="content">
+                    <h2 style="margin-top: 0;">Halo, {{username}}!</h2>
+                    <p style="line-height: 1.6;">Terima kasih telah berbelanja. Berikut adalah rincian pembayaran untuk pesanan Anda:</p>
+                    
+                    <table class="invoice-details">
+                        <thead>
+                            <tr>
+                                <th width="60%">Item</th>
+                                <th width="10%">Qty</th>
+                                <th width="30%" style="text-align: right;">Harga</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td data-label="Item">{{event_name}}</td>
+                                <td data-label="Qty">{{ticket}}</td>
+                                <td data-label="Harga" style="text-align: right;">{{subtotal}}</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td colspan="2" style="text-align: right;">TOTAL PEMBAYARAN</td>
+                                <td style="text-align: right; font-size: 18px;">{{total}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div style="background-color: #e8f4fd; padding: 15px; border-radius: 4px; margin-top: 20px;">
+                        <p style="margin: 0; font-weight: bold; color: #2980b9;">Metode Pembayaran:</p>
+                        <p style="margin: 5px 0 0 0;">Bank Transfer (BCA)</p>
+                        <p style="margin: 5px 0 0 0;">123-456-7890 a/n Adi</p>
+                    </div>
+
+                    <div style="text-align: center;">
+                        <a href="[Link_Website_Anda]" class="btn">Unduh Invoice / Lihat Pesanan</a>
+                    </div>
+
+                    <p style="margin-top: 30px; line-height: 1.6;">Jika Anda memiliki pertanyaan mengenai pembayaran ini, silakan balas email ini atau hubungi tim support kami.</p>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="footer">
+                    <p>&copy; 2024 Mini Project Adi&Felix. All rights reserved.</p>
+                    <p><a href="#">Unsubscribe</a> | <a href="#">Kebijakan Privasi</a></p>
+                </td>
+            </tr>
+        </table>
+    </center>
+
+</body>
+</html>

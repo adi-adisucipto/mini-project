@@ -5,14 +5,13 @@ import { createCustomError } from "../utils/customError";
 import { SECRET_ACCESS_KEY } from "../configs/env.config";
 
 export interface Token {
-    id?: string; // felix buat ini
-    user_id: string;
-    email: string;
-    username: string;
-    password: string;
-    role:string;
-    avatar: string;
-    referral: string;
+    id: string,
+    email: string,
+    username: string,
+    role: string,
+    avatar: string,
+    referral_code: string,
+    points_balance: number
 }
 
 declare module "express-serve-static-core" {
@@ -29,9 +28,12 @@ export function authMiddleware(req:Request, res:Response, next:NextFunction) {
         }
 
         const token = authHeader.split(" ")[1];
+        console.log(token)
         const decode = verify(token, SECRET_ACCESS_KEY) as Token;
-        req.user = decode;
-        next();
+
+        req.user = decode as Token;
+
+        next()
     } catch (error) {
         next(error);
     }

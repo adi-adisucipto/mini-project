@@ -1,6 +1,8 @@
 // src/app/(site)/browse/page.tsx
 
 //console.log("API URL:", process.env.NEXT_PUBLIC_API_URL);
+
+import Link from "next/link";
 import { LocationFilter } from "./LocationFilter";
 
 type Event = {
@@ -89,6 +91,11 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
                   ? `Rp ${event.price.toLocaleString("id-ID")}` //inget harus ini supaya bisa jadi rupiah
                   : "Free"}
               </p>
+              <div className="mt-3">
+                <Link href={`browse/${event.event_id}`}>
+                  <button className="bg-green-950 text-white w-full p-2 rounded-lg hover:bg-green-950/80 cursor-pointer">Event Detail</button>
+                </Link>
+              </div>
             </article>
           ))}
         </div>

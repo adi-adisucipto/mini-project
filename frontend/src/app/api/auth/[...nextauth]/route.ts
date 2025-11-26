@@ -14,7 +14,9 @@ async function refreshAccessToken(token: JWT) {
             }
         );
 
-        const { accessToken, refreshToken } = data.data;
+        console.log(data)
+
+        const { accessToken, refreshToken } = data;
         const decoded = jwtDecode<DecodedToken>(accessToken);
 
         return {
@@ -88,6 +90,8 @@ const handler = NextAuth({
             if(user) {
                 return {
                     ...token,
+                    accessToken: user.accessToken,
+                    refreshToken: user.refreshToken,
                     id:user.id,
                     email: user.email,
                     username: user.username,
@@ -95,8 +99,6 @@ const handler = NextAuth({
                     avatar: user.avatar,
                     points_balance: user.points_balance,
                     referral_code: user.referral_code,
-                    accessToken: user.accessToken,
-                    refreshToken: user.refreshToken
                 }
             }
 
@@ -143,7 +145,6 @@ const handler = NextAuth({
                     avatar: token.avatar,
                     points_balance: token.points_balance,
                     referral_code: token.referral_code,
-                    
                 }
             }
         }

@@ -216,6 +216,7 @@ export async function loginService(email:string, password:string) {
         if(!passValid) throw new Error("Invalid email or password.");
 
         const data = await createRefreshTokens(email);
+        console.log(data)
 
         const exp = new Date();
         exp.setDate(exp.getDate() + 30);
@@ -248,10 +249,12 @@ export async function loginService(email:string, password:string) {
 
 export async function refreshTokenService(token:string) {
     try {
+        console.log(token)
         const user = await prisma.refreshToken.findFirst({
             where: { token: token }
         });
         if(!user) throw new Error("Invalid token");
+        // console.log(user);
 
         const findEmail = await prisma.user.findUnique({
             where: { user_id: user.user_id },
@@ -262,6 +265,7 @@ export async function refreshTokenService(token:string) {
 
         const userInfo = await getUserByEmail(findEmail.email);
         if(!userInfo) throw new Error("Invalid email or password.");
+        
         const data = await createRefreshTokens(findEmail.email);
 
         const accessToken = data.accessToken;
