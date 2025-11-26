@@ -2,9 +2,11 @@ import { Request, Response, NextFunction } from "express";
 import { verify } from "jsonwebtoken";
 
 import { createCustomError } from "../utils/customError";
-import { SECRET_KEY } from "../configs/env.config";
+import { SECRET_ACCESS_KEY } from "../configs/env.config";
 
 export interface Token {
+    id?: string; // felix buat ini
+    user_id: string;
     email: string;
     username: string;
     password: string;
@@ -27,10 +29,17 @@ export function authMiddleware(req:Request, res:Response, next:NextFunction) {
         }
 
         const token = authHeader.split(" ")[1];
-        const decode = verify(token, SECRET_KEY) as Token;
-
+        const decode = verify(token, SECRET_ACCESS_KEY) as Token;
         req.user = decode;
+        next();
     } catch (error) {
         next(error);
     }
+}
+
+export function organizerOnly(req: Request, res: Response, next: NextFunction) {
+  if (!req.user || (req.user.role !== "ORGANIZER" && req.user.role !== "ADMIN")) {
+    return next(createCustomError(403, "Organizer only")); // inget the forum where you got this and learn again
+  }
+  next();
 }
