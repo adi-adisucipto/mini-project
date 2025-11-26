@@ -66,7 +66,6 @@ export default function Navbar() {
     {menuOpen && (
       <div className="absolute right-0 top-full w-48 rounded-b-lg bg-gray-300 p-3 text-left text-sm text-gray-800 shadow-lg">
         <button onClick={() => router.push("/profile")} className="block w-full text-left py-1 hover:text-blue-600">Profile</button>
-        <button onClick={() => router.push("/tickets")} className="block w-full text-left py-1 hover:text-blue-600">My Tickets</button>
         <button onClick={() => router.push("/account")} className="block w-full text-left py-1 hover:text-blue-600">Account Settings</button>
         <button onClick={() => signOut()} className="block w-full text-left py-1 hover:text-blue-600">Log out</button>
       </div>
