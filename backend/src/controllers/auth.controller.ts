@@ -64,10 +64,11 @@ export async function loginController(req:Request, res:Response, next:NextFuncti
 
 export async function refreshTokenController(req:Request, res:Response, next:NextFunction) {
     try {
-        const { refreshToken } = req.body.refreshToken;
-        console.log(refreshToken)
+        const refreshToken = req.body.refreshToken;
         const data = await refreshTokenService(refreshToken);
 
+        // console.log("Akses: " + data.accessToken);
+        console.log("Refresh: " + data.refreshToken);
         res.json({
             accessToken: data.accessToken,
             refreshToken: data.refreshToken
