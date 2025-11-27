@@ -3,6 +3,7 @@ import prisma from "../lib/prisma";
 import cron from "node-cron";
 
 async function rollbackExpiredPoints() {
+    console.log(new Date())
     const expiredTransaction = await prisma.transaction.findMany({
         where: {
             statusPay: StatusPay.WaitingPay,
@@ -33,30 +34,38 @@ async function rollbackExpiredPoints() {
                     await tx.pointUse.delete({
                         where: {id: pointUsage.id}
                     });
-
-                    if(transaction.coupon_use_id) {
-                        await tx.coupon.update({
-                            where: {coupon_id: transaction.coupon_use_id},
-                            data: {
-                                is_used: false
-                            }
-                        })
-                    }
-
-                    await tx.transaction.update({
-                        where: {transaction_id: transaction.transaction_id},
-                        data: {
-                            statusPay: StatusPay.Expired
-                        }
-                    });
                 }
-            });
+                if(transaction.coupon_use_id) {
+                    await tx.coupon.update({
+                        where: {coupon_id: transaction.coupon_use_id},
+                        data: {
+                            is_used: false
+                        }
+                    })
+                }
 
-            console.log("Rollback transaksi berhasil")
+                await tx.event.update({
+                    where: { event_id: transaction.event_id },
+                    data: {
+                        available_seats: {
+                            increment: transaction.ticket_quantity
+                        }
+                    }
+                })
+
+                await tx.transaction.update({
+                    where: {transaction_id: transaction.transaction_id},
+                    data: {
+                        statusPay: StatusPay.Expired
+                    }
+                });
+            });
         } catch (error) {
             console.log(error)
         }
     }
+
+    console.log("Rollback transaksi berhasil")
 }
 
 cron.schedule("*/10 * * * *", rollbackExpiredPoints)

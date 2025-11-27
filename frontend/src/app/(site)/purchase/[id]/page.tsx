@@ -2,7 +2,7 @@
 
 import axios from "axios";
 import { useEffect, use, useState } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { useFormik } from "formik";
 import { enqueueSnackbar } from "notistack";
@@ -32,13 +32,14 @@ function page({params}:PageProps) {
     const {id} =  use(params);
     const { data: session, status } = useSession()
     const accessToken = session?.accessToken
+    const router = useRouter();
     useEffect(() => {
         const eventInfo = async () => {
             try {
                 const event = await axios.get(`http://localhost:8000/api/transaction/event/${id}`);
                 setData(event.data.user);
             } catch (error) {
-                
+                throw error;
             }
         }
 
@@ -66,7 +67,8 @@ function page({params}:PageProps) {
                         }
                     }
                 );
-                enqueueSnackbar(data.data.data.messgae, { variant: "success" })
+                enqueueSnackbar(data.data.data.messgae, { variant: "success" });
+                router.push("/tickets")
             } catch (error) {
                 console.log(error)
             }

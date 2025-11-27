@@ -1,8 +1,9 @@
-import { Prisma, Status } from "@prisma/client";
+import { Prisma, Status, StatusPay } from "@prisma/client";
 import prisma from "../lib/prisma";
 import { createCustomError } from "../utils/customError";
 import { compileDetailPay } from "../helpers/compileRegistrationTemplate";
 import { transporter } from "../helpers/transporter";
+import { cloudinaryUplaod } from "../utils/cloudinary";
 
 export async function getEventById(id: string) {
     try {
@@ -230,6 +231,67 @@ export async function createTransactionService(eventId: string, username:string,
             discVoucher
         };
 
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getTransactionById(id:string) {
+    try {
+        const user = await prisma.transaction.findUnique({
+            where: {transaction_id:id}
+        });
+
+        return user;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function uploadProofService(id:string, file:Express.Multer.File) {
+    try {
+        const transaction = await getTransactionById(id);
+        if(!transaction) throw createCustomError(404, "Transaction not found");
+
+        const image = await cloudinaryUplaod(file, "bukti");
+        const secure_url = image.secure_url;
+
+        const confirmPayment = new Date();
+        confirmPayment.setDate(confirmPayment.getDate() + 3)
+
+        const data = await prisma.transaction.update({
+            where:{transaction_id: id},
+            data: {
+                proof_upload_at: new Date(),
+                payment_proof_url: secure_url,
+                statusPay: StatusPay.WaitingConfirm,
+                organizer_confirmation_due_at: confirmPayment
+            }
+        });
+
+        return data;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export async function getTransactionByUserEmail(email:string) {
+    try {
+        const id = await prisma.user.findUnique({
+            where: { email: email },
+            select: {user_id: true}
+        });
+        if(!id) throw createCustomError(404, "User not found");
+
+
+        const data = await prisma.transaction.findMany({
+            where: { customer_id: id.user_id },
+            include: {
+                event: true
+            }
+        });
+
+        return data
     } catch (error) {
         throw error;
     }

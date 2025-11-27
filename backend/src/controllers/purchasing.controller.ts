@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { createTransactionService, getEventById } from "../services/purchasing.service";
+import { createTransactionService, getEventById, uploadProofService, getTransactionByUserEmail } from "../services/purchasing.service";
+import { createCustomError } from "../utils/customError";
 
 interface Token extends Request {
     user?: {
@@ -54,6 +55,37 @@ export async function getEventByIdController(req:Request, res:Response, next:Nex
             message: "Berhasil",
             user
         })
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function uploadProofController(req:Request, res:Response, next:NextFunction) {
+    try {
+        const transactionId = req.params.id;
+        const file = req.file;
+        if(!file) throw createCustomError(400, "File bukti pembayaran tidak ditemukan");
+
+        const data = await uploadProofService(transactionId, file);
+
+        res.status(200).json({
+            message: "Berhasil upload!",
+            data
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function getTransactionByUserIdController(req:Request, res:Response, next:NextFunction) {
+    try {
+        const {email} = req.body
+        const data = await getTransactionByUserEmail(email);
+        console.log(data)
+
+        res.status(200).json({
+            data
+        });
     } catch (error) {
         next(error);
     }
