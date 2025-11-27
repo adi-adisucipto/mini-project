@@ -43,6 +43,11 @@ export default function Navbar() {
               Create Events
             </button>
           )}
+          {isEO && (
+            <button onClick={() => router.push("/eo/transactions")} className="hover:text-blue-600">
+              Transactions
+            </button>
+          )}
           <button onClick={() => router.push("/browse")} className="hover:text-blue-600">
             Browse Events
           </button>
