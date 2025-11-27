@@ -13,6 +13,8 @@ export default function Navbar() {
   const [search, setSearch] = useState("");
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const avatar = session?.user?.avatar
+
   const submitSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
@@ -58,7 +60,11 @@ export default function Navbar() {
       onClick={() => setMenuOpen((v) => !v)}
       className="flex items-center gap-2 rounded-md bg-gray-300 px-3 py-2 focus:outline-none"
     >
-      <span className="h-6 w-6 rounded bg-white" />
+      {avatar === null ? (
+        <span className="h-6 w-6 rounded bg-white" />
+      ) : (
+        <img src={avatar} className="h-6 w-6 rounded"></img>
+      )}
       <span className="text-sm text-gray-800">{session.user?.name || session.user?.email}</span>
       <span className="text-gray-600">▾</span>
     </button>
