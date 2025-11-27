@@ -56,34 +56,34 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ avatarValue, setAvatarValue
 
   return (
     <div
-            className={`w-12 h-12 rounded-full flex flex-col justify-center items-center ${imageUrl ? 'border-2 border-blue-200' : ''}`}
-            onClick={openFileDialog}
-            onDragOver={(e) => dragOverClass(e, true)}
-            onDragLeave={(e) => dragOverClass(e, false)}
-            onDrop={handleDrop}
-        >
-            {/* Tampilkan Placeholder atau Pratinjau Gambar */}
-            {!imageUrl ? (
-                <div className="bg-slate-200 w-full h-full rounded-full flex justify-center items-center">
-                    <User size={30} />
-                </div>
-            ) : (
-                <img
-                    src={imageUrl}
-                    alt="Avatar Preview"
-                    className="w-full h-full rounded-full object-cover"
-                />
-            )}
-
-            <input
-                type="file"
-                ref={fileInputRef}
-                onChange={handleFileChange}
-                accept="image/*"
-                name="avatar"
-                className="hidden"
+        className={`w-12 h-12 rounded-full flex flex-col justify-center items-center ${imageUrl ? 'border-2 border-blue-200' : ''}`}
+        onClick={openFileDialog}
+        onDragOver={(e) => dragOverClass(e, true)}
+        onDragLeave={(e) => dragOverClass(e, false)}
+        onDrop={handleDrop}
+    >
+        {/* Tampilkan Placeholder atau Pratinjau Gambar */}
+        {!imageUrl ? (
+            <div className="bg-slate-200 w-full h-full rounded-full flex justify-center items-center">
+                <User size={30} />
+            </div>
+        ) : (
+            <img
+                src={imageUrl}
+                alt="Avatar Preview"
+                className="w-full h-full rounded-full object-cover"
             />
-        </div>
+        )}
+
+        <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handleFileChange}
+            accept="image/*"
+            name="avatar"
+            className="hidden"
+        />
+    </div>
   )
 }
 
