@@ -5,7 +5,11 @@ import errorMiddleware from "./middlewares/error.middleware";
 import router from "./routes";
 import eventsRouter from "./routes/event.router"
 import "./services/cleanup"
-import "./services/cleanupTransaction"
+import "./services/cleanupExpiredTransaction"
+import "./services/cleanupRejectedTransaction"
+import "./services/cleanupConfirmExpiresTransaction"
+import "./services/cleanupConfirmExpiresTransaction"
+import "./services/cleanupCancelTransaction"
 
 const app = express();
 
