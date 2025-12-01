@@ -1,4 +1,5 @@
 import LoginPage from './components/login'
+import Image from 'next/image'
 
 function LoginView() {
   return (
