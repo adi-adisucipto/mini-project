@@ -64,12 +64,12 @@ export async function loginController(req:Request, res:Response, next:NextFuncti
 
 export async function refreshTokenController(req:Request, res:Response, next:NextFunction) {
     try {
-        const { refreshToken } = req.body.refreshToken;
+        const refreshToken = req.body.refreshToken;
         const data = await refreshTokenService(refreshToken);
 
         res.json({
-            accessToken: data.accessToken,
-            refreshToken: data.refreshToken
+            accessToken: data.tokens.accessToken,
+            refreshToken: data.tokens.refreshToken
         });
     } catch (error) {
         next(error);

@@ -42,15 +42,13 @@ model User {
   review RiviewEvent[]
 
 
-  refreshTokens RefreshToken[]
-
   @@map("users")
 }
 
 model RefreshToken {
   id String @id @default(uuid())
   user_id String
-  token String
+  token String @unique
   expires_at DateTime
 
   user User @relation(fields: [user_id], references: [user_id])

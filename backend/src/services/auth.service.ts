@@ -248,47 +248,41 @@ export async function loginService(email:string, password:string) {
 
 export async function refreshTokenService(token:string) {
     try {
-        const user = await prisma.refreshToken.findFirst({
-            where: { token: token }
-        });
-        if(!user) throw new Error("Invalid token");
-
-        const findEmail = await prisma.user.findUnique({
-            where: { user_id: user.user_id },
-            select: { email: true }
+        const findToken = await prisma.refreshToken.findFirst({
+            where: { token: token },
+            select: { user_id: true }
         });
 
-        if(findEmail === null) throw new Error();
+        if(!findToken) throw createCustomError(404, "Token tidak ditemukan")
 
-        const userInfo = await getUserByEmail(findEmail.email);
-        if(!userInfo) throw new Error("Invalid email or password.");
-        const data = await createRefreshTokens(findEmail.email);
+        const findEmail = await prisma.user.findFirst({
+            where: { user_id: findToken?.user_id },
+            select: {email: true}
+        });
+        if(!findEmail) throw createCustomError(404, "User not found!")
 
-        const accessToken = data.accessToken;
-        const refreshToken = data.refreshToken;
+        const tokens = await createRefreshTokens(findEmail?.email);
+
+        await prisma.refreshToken.deleteMany({
+            where: {token: token},
+        });
 
         const exp = new Date();
-        exp.setDate(exp.getDate() + 30);
+        exp.setDate(exp.getDate() + 30)
 
-        await prisma.$transaction(async (tx:Prisma.TransactionClient) => {
-            await tx.refreshToken.deleteMany({
-                where: { token: token }
-            });
-
-            await tx.refreshToken.create({
-                data: {
-                    user_id: data.user.user_id,
-                    token: data.refreshToken,
-                    expires_at: exp
-                }
-            });
-        });
+        await prisma.refreshToken.create({
+            data: {
+                token: tokens.refreshToken,
+                expires_at: exp,
+                user_id: findToken.user_id
+            }
+        })
 
         return {
-            accessToken,
-            refreshToken
+            message: "OK",
+            tokens
         }
     } catch (error) {
-        throw error;
+        throw error
     }
 }

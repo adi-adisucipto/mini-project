@@ -6,6 +6,7 @@ import { useFormik } from "formik"
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
+import Link from "next/link";
 
 function LoginPage() {
     const router = useRouter()
@@ -37,26 +38,28 @@ function LoginPage() {
     })
   return (
     <div>
-        <form onSubmit={formik.handleSubmit} className="flex flex-col gap-5">
-            <input
-                type="email"
-                name="email"
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                placeholder="Email"
-                className="bg-black/30 px-5 py-2 h-14 outline-none rounded-[5px] text-[20px]"
-            />
+      <form onSubmit={formik.handleSubmit} className="flex flex-col gap-5">
+        <input
+            type="email"
+            name="email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            placeholder="Email"
+            className="bg-black/30 px-5 py-4 rounded-[5px] outline-none text-white text-[20px]"
+        />
 
-            <input
-                type="password"
-                name="password"
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                placeholder="Password"
-                className="bg-black/30 px-5 py-2 h-14 outline-0 rounded-[5px] text-[20px]"
-            />
-            <Button type="submit">Login</Button>
-        </form>
+        <input
+            type="password"
+            name="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            placeholder="Password"
+            className="bg-black/30 px-5 py-4 rounded-[5px] outline-none text-white text-[20px]"
+        />
+        <Button type="submit" className="mt-10">Login</Button>
+      </form>
+
+      <div className="text-black/50">Already have account? <Link href='/auth/register' className="text-[#F6A273]">Sign Up</Link></div>
     </div>
   )
 }
