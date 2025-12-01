@@ -36,8 +36,11 @@ model User {
 
   pointHistory PointTransactions[]
   coupon Coupon[]
-
   events       Event[]
+  refreshTokens RefreshToken[]
+  transaction Transaction[]
+  review RiviewEvent[]
+
 
   refreshTokens RefreshToken[]
 
@@ -58,7 +61,7 @@ model Event {
   organizer_id    String
   name            String
   description     String
-  price           Int
+  price           Decimal
   start_date      DateTime
   end_date        DateTime
   available_seats Int
@@ -69,11 +72,12 @@ model Event {
   created_at      DateTime @default(now())
 
   organizer       User     @relation(fields: [organizer_id], references: [user_id])
+  transaction     Transaction[]
+  review          RiviewEvent[]
+  voucher         Voucher[]
 
   @@map("events")
 }
-
-
 
 enum Role {
   USER
@@ -88,10 +92,18 @@ model PointTransactions {
   point_remaining Int
   created_at DateTime @default(now())
   expiration_date DateTime
+  status Status @default(Available)
+  used_at DateTime?
 
   user User @relation(fields: [user_id], references: [user_id])
+  transaction PointUse[]
 
   @@map("point_transactions")
+}
+
+enum Status {
+  Available
+  Used
 }
 
 model Coupon {
@@ -100,11 +112,98 @@ model Coupon {
   code String @unique
   discount_amount Decimal
   expiration_date DateTime
-  is_used Boolean
-  used_at DateTime
+  is_used Boolean @default(false)
+  used_at DateTime?
   created_at DateTime @default(now())
 
   user User @relation(fields: [user_id], references: [user_id])
+  transaction Transaction[]
 
   @@map("coupon")
+}
+
+model Transaction {
+  transaction_id String @id @default(uuid())
+  customer_id String
+  event_id String
+  ticket_quantity Int @default(1)
+  total_price_paid Decimal
+  statusPay StatusPay @default(WaitingPay)
+  proof_upload_at DateTime?
+  payment_proof_url String?
+  payment_proof_due_at DateTime?
+  organizer_confirmation_due_at DateTime?
+
+  points_used Decimal @default(0)
+  coupon_use_id String?
+  voucher_used_id String?
+
+  created_at DateTime @default(now())
+
+  customer User @relation(fields: [customer_id], references: [user_id])
+  event Event @relation(fields: [event_id], references: [event_id])
+  coupon Coupon? @relation(fields: [coupon_use_id], references: [coupon_id])
+  voucher Voucher? @relation(fields: [voucher_used_id], references: [voucher_id])
+  point PointUse[]
+
+  @@map("transaction")
+}
+
+enum StatusPay {
+  WaitingPay
+  WaitingConfirm
+  Done
+  Rejected
+  Expired
+  Canceled
+}
+
+model RiviewEvent {
+  riview_id String @id @default(uuid())
+  customer_id String
+  event_id String
+  rating Rating @default(A)
+  review_text String
+  created_at DateTime @default(now())
+
+  customer User @relation(fields: [customer_id], references: [user_id])
+  event Event @relation(fields: [event_id], references: [event_id])
+
+  @@map("review_event")
+}
+
+enum Rating {
+  A
+  B
+  C
+  D
+  E
+}
+
+model Voucher {
+  voucher_id String @id @default(uuid())
+  event_id String
+  code String @unique
+  discount_amount Decimal
+  start_date DateTime
+  end_date DateTime
+  usage_limit Int
+  is_active Boolean @default(true)
+
+  event Event @relation(fields: [event_id], references: [event_id])
+  transaction Transaction[]
+
+  @@map("voucher")
+}
+
+model PointUse {
+  id String @id @default(uuid())
+  transaction_id String
+  point_id String
+  amount_used Decimal
+
+  transaction Transaction @relation(fields: [transaction_id], references: [transaction_id])
+  point PointTransactions @relation(fields: [point_id], references: [point_history_id])
+
+  @@map("point_use")
 }
