@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "@/components/Button";
 import axios, { AxiosError } from "axios";
 import { useFormik } from "formik"
 import { signIn } from "next-auth/react";
@@ -54,7 +55,7 @@ function LoginPage() {
             placeholder="Password"
             className="bg-slate-200 px-3 py-2 rounded-xl"
         />
-        <button type="submit" className="bg-sky-200 py-2 rounded-xl cursor-pointer">Login</button>
+        <Button type="submit">Login</Button>
       </form>
     </div>
   )
