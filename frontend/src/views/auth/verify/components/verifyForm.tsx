@@ -5,6 +5,8 @@ import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios"
 import { useSnackbar } from "notistack";
 import AvatarUpload from "./AvatarUpload";
+import Button from "@/components/Button";
+import Image from "next/image";
 
 function VerifyForm() {
     const router = useRouter()
@@ -17,18 +19,21 @@ function VerifyForm() {
             username: "",
             password: "",
             referrerCode: "",
-            role: 'USER',
+            isOrganizer: false,
             avatar: null,
             token: ""
         },
         onSubmit: async () => {
             try {
-                const { username, password, referrerCode, avatar, role } = formik.values;
+                const { username, password, referrerCode, avatar, isOrganizer } = formik.values;
                 const formData = new FormData();
 
                 formData.append('username', username);
                 formData.append('password', password);
                 if(referrerCode) formData.append('referrerCode', referrerCode);
+
+                const role = isOrganizer ? "ORGANIZER" : "USER"
+
                 formData.append('role', role);
                 if(avatar) formData.append("avatar", avatar)
 
@@ -52,99 +57,68 @@ function VerifyForm() {
             }
         }
     });
-
-    const roleProps = formik.getFieldProps('role');
   return (
-    <div className="h-screen flex justify-center items-center">
-        <form onSubmit={formik.handleSubmit} className="flex flex-col gap-5 w-lg bg-slate-50 p-5 rounded-lg">
-            <div className="mx-auto">
-                <AvatarUpload avatarValue={formik.values.avatar} setAvatarValue={(file: File | null) => formik.setFieldValue("avatar", file)}/>
-            </div>
-
-            <input
-                type="text"
-                name="username"
-                onChange={formik.handleChange}
-                value={formik.values.username}
-                placeholder="Username"
-                className="border border-slate-400 px-3 py-2 rounded-lg outline-0 w-full"
-            />
-            <input
-                type="password"
-                name="password"
-                onChange={formik.handleChange}
-                value={formik.values.password}
-                placeholder="Password"
-                className="border border-slate-400 px-3 py-2 rounded-lg outline-0 w-full"
-            />
-            <input
-                type="text"
-                name="referrerCode"
-                onChange={formik.handleChange}
-                value={formik.values.referrerCode}
-                placeholder="Referral Code (Optional)"
-                className="border border-slate-400 px-3 py-2 rounded-lg outline-0 w-full"
-            />
-
-            <div className="flex justify-between w-[400px] items-center mx-auto">
-                <div>
-                    <label className="flex items-center cursor-pointer gap-3 text-lg">
-                        <input 
-                            type="radio" 
-                            {...roleProps}
-                            value="USER"
-                            checked={formik.values.role === 'USER'}
-                            className="peer hidden"
-                        />
-                        
-                        <span className="
-                            w-4 h-4 rounded-full border-2 border-gray-400 
-                            flex items-center justify-center transition-all duration-150
-                            peer-checked:border-blue-600                       
-                            peer-checked:bg-white
-                        ">
-                            <span className="
-                                w-2.5 h-2.5 rounded-full bg-blue-600 
-                                transform scale-0 transition-all duration-150
-                                peer-checked:scale-100
-                            "></span>
-                        </span>
-                        User
-                    </label>
+    <div className="w-full flex">
+        <div className="h-screen w-[50%] flex justify-center items-center">
+            <form onSubmit={formik.handleSubmit} className="flex flex-col gap-6 w-full px-[83px]">
+                <div className="mx-auto">
+                    <AvatarUpload avatarValue={formik.values.avatar} setAvatarValue={(file: File | null) => formik.setFieldValue("avatar", file)}/>
                 </div>
 
-                <div>
-                    <label className="flex items-center cursor-pointer gap-3 text-lg">
-                        <input 
-                            type="radio" 
-                            {...roleProps}
-                            value="ORGANIZER"
-                            checked={formik.values.role === 'ORGANIZER'}
-                            className="peer hidden"
-                        />
-                        
-                        <span className="
-                            w-4 h-4 rounded-full border-2 border-gray-400 
-                            flex items-center justify-center transition-all duration-150
-                            peer-checked:border-blue-600
-                            peer-checked:bg-white
-                        ">
-                            <span className="
-                                w-2.5 h-2.5 rounded-full bg-blue-600 
-                                transform scale-0 transition-all duration-150
-                                peer-checked:scale-100
-                            "></span>
-                        </span>
-                        Organizer
-                    </label>
-                </div>
-            </div>
+                <h1 className='font-bold lg:text-[50px] text-[40px] text-center'>CREATE ACCOUNT</h1>
 
-            <button
-                type="submit" 
-                className="mt-6 w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition cursor-pointer"
-            >Submit Register</button>
-        </form>
+                <input
+                    type="text"
+                    name="username"
+                    onChange={formik.handleChange}
+                    value={formik.values.username}
+                    placeholder="Username"
+                    className="bg-black/30 px-5 py-4 rounded-[5px] outline-none text-white text-[20px] w-full"
+                />
+                <input
+                    type="password"
+                    name="password"
+                    onChange={formik.handleChange}
+                    value={formik.values.password}
+                    placeholder="Password"
+                    className="bg-black/30 px-5 py-4 rounded-[5px] outline-none text-white text-[20px] w-full"
+                />
+                <input
+                    type="text"
+                    name="referrerCode"
+                    onChange={formik.handleChange}
+                    value={formik.values.referrerCode}
+                    placeholder="Referral Code (Optional)"
+                    className="bg-black/30 px-5 py-4 rounded-[5px] outline-none text-white text-[20px] w-full"
+                />
+
+                <div className="flex justify-between w-full items-center mx-auto">
+                    <div className="flex items-center cursor-pointer gap-2 text-sm text-gray-700">
+                        <label className="flex items-center cursor-pointer gap-3 text-lg">
+                            <input 
+                                type="checkbox" 
+                                name="isOrganizer"
+                                value="USER"
+                                checked={formik.values.isOrganizer}
+                                onChange={formik.handleChange}
+                                className="h-5 w-5 rounded border-gray-400 bg-white checked:bg-orange-500 checked:border-orange-500 focus:ring-orange-500 text-orange-500"
+                            />
+                            
+                            <span className="text-[17px]">Register as Organizer</span>
+                        </label>
+                    </div>
+                </div>
+
+                <Button
+                    type="submit"
+                >Submit Register</Button>
+            </form>
+        </div>
+
+        <div className='lg:w-[50%] md:w-[50%] bg-black/30 bg-cover relative z-20 lg:flex hidden justify-center items-center'>
+          <Image src="/party.jpg" fill={true} alt='cover' className='w-full absolute object-cover mix-blend-overlay'/>
+          <h1 className='text-[130px] text-white font-monoton text-center'>LET'S PARTY WITH US</h1>
+        </div>
     </div>
   )
 }
