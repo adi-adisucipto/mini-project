@@ -59,7 +59,7 @@ function LoginPage() {
         <Button type="submit" className="mt-10">Login</Button>
       </form>
 
-      <div className="text-black/50">Already have account? <Link href='/auth/register' className="text-[#F6A273]">Sign Up</Link></div>
+      <div className="text-black/50">Not have account? <Link href='/auth/register' className="text-[#F6A273] underline">Sign Up</Link></div>
     </div>
   )
 }
