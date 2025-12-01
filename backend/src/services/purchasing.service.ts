@@ -296,3 +296,48 @@ export async function getTransactionByUserEmail(email:string) {
         throw error;
     }
 }
+
+export async function cancelTransactionService(id:string) {
+    try {
+        await prisma.$transaction(async (tx:Prisma.TransactionClient) => {
+            const transaction = await tx.transaction.findUnique({
+                where: { transaction_id: id },
+                include: { event: true, point: true, coupon: true }
+            })
+
+            await tx.transaction.update({
+                where: { transaction_id: id },
+                data: {
+                    statusPay: StatusPay.Canceled,
+                }
+            });
+
+            await tx.event.update({
+                where: { event_id: transaction?.event_id },
+                data: { available_seats: {
+                    increment: transaction?.ticket_quantity
+                }}
+            })
+
+            if(transaction?.point) {
+                for(const pointUsage of transaction.point){
+                    await tx.pointTransactions.update({
+                        where: {point_history_id: pointUsage.point_id},
+                        data: {
+                            status: Status.Available,
+                            point_remaining: {
+                                increment: Number(pointUsage.amount_used)
+                            }
+                        }
+                    });
+
+                    await tx.pointUse.delete({
+                        where: {id: pointUsage.id}
+                    });
+                }
+            }
+        });
+    } catch (error) {
+        throw error;
+    }
+}

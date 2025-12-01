@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createTransactionService, getEventById, uploadProofService, getTransactionByUserEmail } from "../services/purchasing.service";
+import { createTransactionService, getEventById, uploadProofService, getTransactionByUserEmail, cancelTransactionService } from "../services/purchasing.service";
 import { createCustomError } from "../utils/customError";
 
 interface Token extends Request {
@@ -86,6 +86,20 @@ export async function getTransactionByUserIdController(req:Request, res:Response
         res.status(200).json({
             data
         });
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function cancelTransactionController(req:Request, res:Response, next:NextFunction) {
+    try {
+        const { id } = req.body
+        console.log(id)
+        const data = await cancelTransactionService(id);
+
+        res.status(200).json({
+            message: "Berhasil membatalkan pembelian"
+        })
     } catch (error) {
         next(error);
     }

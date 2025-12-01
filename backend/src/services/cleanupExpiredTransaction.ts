@@ -13,7 +13,8 @@ async function rollbackExpiredPoints() {
         },
         include: {
             point: true,
-            coupon: true
+            coupon: true,
+            event: true
         }
     });
 

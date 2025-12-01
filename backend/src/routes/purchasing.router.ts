@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { createTransactionController, getEventByIdController, uploadProofController, getTransactionByUserIdController } from "../controllers/purchasing.controller";
+import { createTransactionController, getEventByIdController, uploadProofController, getTransactionByUserIdController, cancelTransactionController } from "../controllers/purchasing.controller";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import uploader from "../utils/uploader";
 
@@ -9,5 +9,6 @@ purchasingAuth.post("/purchase/:id", authMiddleware, createTransactionController
 purchasingAuth.get("/event/:id", getEventByIdController);
 purchasingAuth.post("/upload/:id", authMiddleware, uploader().single("bukti"), uploadProofController);
 purchasingAuth.post("/tickets", getTransactionByUserIdController);
+purchasingAuth.post("/cancel", cancelTransactionController);
 
 export default purchasingAuth

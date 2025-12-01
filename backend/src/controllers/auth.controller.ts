@@ -68,8 +68,8 @@ export async function refreshTokenController(req:Request, res:Response, next:Nex
         const data = await refreshTokenService(refreshToken);
 
         res.json({
-            accessToken: data.accessToken,
-            refreshToken: data.refreshToken
+            accessToken: data.tokens.accessToken,
+            refreshToken: data.tokens.refreshToken
         });
     } catch (error) {
         next(error);
