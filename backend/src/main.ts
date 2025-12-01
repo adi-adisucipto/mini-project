@@ -9,7 +9,6 @@ import "./services/cleanupExpiredTransaction"
 import "./services/cleanupRejectedTransaction"
 import "./services/cleanupConfirmExpiresTransaction"
 import "./services/cleanupConfirmExpiresTransaction"
-import "./services/cleanupCancelTransaction"
 
 const app = express();
 

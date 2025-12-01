@@ -263,9 +263,24 @@ export async function refreshTokenService(token:string) {
 
         const tokens = await createRefreshTokens(findEmail?.email);
 
+        await prisma.refreshToken.deleteMany({
+            where: {token: token},
+        });
+
+        const exp = new Date();
+        exp.setDate(exp.getDate() + 30)
+
+        await prisma.refreshToken.create({
+            data: {
+                token: tokens.refreshToken,
+                expires_at: exp,
+                user_id: findToken.user_id
+            }
+        })
+
         return {
-            accessToken: tokens.accessToken,
-            refreshToken: tokens.refreshToken
+            message: "OK",
+            tokens
         }
     } catch (error) {
         throw error

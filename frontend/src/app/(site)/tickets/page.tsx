@@ -49,7 +49,6 @@ function page() {
                 try {
                     const transaction = await axios.post(`http://localhost:8000/api/transaction/tickets`, { email });
                     setDatas(transaction.data.data);
-                    console.log(datas[0])
                 } catch (error) {
                     throw error;
                 }
@@ -57,6 +56,15 @@ function page() {
             transactionInfo();
         }
     }, [status, session]);
+
+    const handleClick = async (id:string) => {
+        try {
+            const cancel = await axios.post(`http://localhost:8000/api/transaction/cancel`, { id });
+            window.location.reload();
+        } catch (error) {
+            console.log(error)
+        }
+    }
 
     const statusTextMap: { [key: string]: string } = {
         "WaitingPay": "Menunggu Pembayaran",
@@ -80,10 +88,11 @@ function page() {
         {status == "loading" || (status == "authenticated" && datas.length === 0) ? (
             <p className="text-gray-500 w-full text-center">Memuat data transaksi ...</p>
         ) : (
-            <div className="max-w-4xl w-4xl">
+            <div className="max-w-4xl w-4xl mx-auto">
                 <div className="">
                     {datas.map((tx) => {
                         const colorClass = statusColorMap[tx.statusPay] || "text-gray-700";
+                        const id = tx.event.event_id;
                         return (
                             <div key={tx.transaction_id}
                                 className="flex flex-col gap-3 bg-slate-200 m-5 p-5 rounded-xl"
@@ -103,9 +112,17 @@ function page() {
                                     </h3>
                                 </div>
                                 {tx.statusPay === "WaitingPay" ? (
-                                    <Link href={`/tickets/${tx.transaction_id}`}>
-                                        <button className="bg-green-950 text-white w-full p-2 rounded-lg hover:bg-green-950/80 cursor-pointer">Upload Bukti Pembayaran</button>
-                                    </Link>
+                                    <div className="flex flex-col gap-3">
+                                        <Link href={`/tickets/${tx.transaction_id}`}>
+                                            <button className="bg-green-950 text-white w-full p-2 rounded-lg hover:bg-green-950/80 cursor-pointer">Upload Bukti Pembayaran</button>
+                                        </Link>
+                                        <button
+                                            className="bg-red-700 text-white w-full p-2 rounded-lg hover:bg-red-700/80 cursor-pointer"
+                                            onClick={() => handleClick(tx.transaction_id)}
+                                            >
+                                                Cancel
+                                        </button>
+                                    </div>
                                 ) : (<></>)}
                             </div>
                         )
