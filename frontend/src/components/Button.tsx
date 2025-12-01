@@ -8,7 +8,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 function Button({ children, className, ...props } : ButtonProps) {
   return (
     <button
-        className={twMerge("bg-[#F6A273] rounded-[30px] w-full hover:bg-[#F6A273]/80 cursor-pointer lg:py-[15px] py-2.5 lg:text-[20px] font-semibold", className)}
+        className={twMerge("bg-[#F6A273] rounded-[30px] w-full hover:bg-[#F6A273]/80 cursor-pointer py-2.5 text-[20px] font-semibold", className)}
         {...props}
     >
       {children}

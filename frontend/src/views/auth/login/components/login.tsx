@@ -6,6 +6,7 @@ import { useFormik } from "formik"
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { enqueueSnackbar } from "notistack";
+import Link from "next/link";
 
 function LoginPage() {
     const router = useRouter()
@@ -44,7 +45,7 @@ function LoginPage() {
             value={formik.values.email}
             onChange={formik.handleChange}
             placeholder="Email"
-            className="bg-slate-200 px-3 py-2 rounded-xl"
+            className="bg-black/30 px-5 py-4 rounded-[5px] outline-none text-white text-[20px]"
         />
 
         <input
@@ -53,10 +54,12 @@ function LoginPage() {
             value={formik.values.password}
             onChange={formik.handleChange}
             placeholder="Password"
-            className="bg-slate-200 px-3 py-2 rounded-xl"
+            className="bg-black/30 px-5 py-4 rounded-[5px] outline-none text-white text-[20px]"
         />
-        <Button type="submit">Login</Button>
+        <Button type="submit" className="mt-10">Login</Button>
       </form>
+
+      <div className="text-black/50">Already have account? <Link href='/auth/register' className="text-[#F6A273]">Sign Up</Link></div>
     </div>
   )
 }
