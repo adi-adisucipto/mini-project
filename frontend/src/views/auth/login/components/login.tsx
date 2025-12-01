@@ -37,26 +37,26 @@ function LoginPage() {
     })
   return (
     <div>
-        <form onSubmit={formik.handleSubmit} className="flex flex-col gap-5">
-            <input
-                type="email"
-                name="email"
-                value={formik.values.email}
-                onChange={formik.handleChange}
-                placeholder="Email"
-                className="bg-black/30 px-5 py-2 h-14 outline-none rounded-[5px] text-[20px]"
-            />
+      <form onSubmit={formik.handleSubmit} className="flex flex-col gap-5">
+        <input
+            type="email"
+            name="email"
+            value={formik.values.email}
+            onChange={formik.handleChange}
+            placeholder="Email"
+            className="bg-slate-200 px-3 py-2 rounded-xl"
+        />
 
-            <input
-                type="password"
-                name="password"
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                placeholder="Password"
-                className="bg-black/30 px-5 py-2 h-14 outline-0 rounded-[5px] text-[20px]"
-            />
-            <Button type="submit">Login</Button>
-        </form>
+        <input
+            type="password"
+            name="password"
+            value={formik.values.password}
+            onChange={formik.handleChange}
+            placeholder="Password"
+            className="bg-slate-200 px-3 py-2 rounded-xl"
+        />
+        <Button type="submit">Login</Button>
+      </form>
     </div>
   )
 }
