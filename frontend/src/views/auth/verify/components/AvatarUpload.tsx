@@ -56,7 +56,7 @@ const AvatarUpload: React.FC<AvatarUploadProps> = ({ avatarValue, setAvatarValue
 
   return (
     <div
-        className={`w-12 h-12 rounded-full flex flex-col justify-center items-center ${imageUrl ? 'border-2 border-blue-200' : ''}`}
+        className={`w-20 h-20 rounded-full flex flex-col justify-center items-center ${imageUrl ? 'border-2 border-blue-200' : ''}`}
         onClick={openFileDialog}
         onDragOver={(e) => dragOverClass(e, true)}
         onDragLeave={(e) => dragOverClass(e, false)}

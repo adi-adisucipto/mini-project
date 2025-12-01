@@ -2,9 +2,12 @@
 
 import { Formik, Form, FormikProps } from "formik";
 import { useSnackbar } from "notistack";
+import Link from "next/link";
 
 import { verificationLinkService } from "@/services/auth";
 import registerSchema from "../schema";
+import Button from "@/components/Button";
+import { AxiosError } from "axios";
 
 function RegisterFrom() {
     const { enqueueSnackbar } = useSnackbar();
@@ -16,9 +19,9 @@ function RegisterFrom() {
 
             enqueueSnackbar(data.message, { variant: "success" });
         } catch (error) {
-            if(error instanceof Error) {
+            if(error instanceof AxiosError) {
                 console.log(error)
-                enqueueSnackbar(error.message, { variant: "error" })
+                enqueueSnackbar(error.response?.data.error, { variant: "error" })
             } else {
                 enqueueSnackbar("Something went wrong", { variant: "error" })
             }
@@ -32,26 +35,29 @@ function RegisterFrom() {
     >
         {(props: FormikProps<{email: string}>) => {
             return (
-                <Form className="flex flex-col gap-5">
-                    <div className="w-lg">
+                <Form className="flex flex-col text-center">
+                    <div className="w-full">
                         <input
                             name="email"
                             type="email"
                             placeholder="Email"
                             value={props.values.email}
                             onChange={props.handleChange}
-                            className="border border-slate-400 px-3 py-2 rounded-lg outline-0 w-full"
+                            className="bg-black/30 px-5 py-4 rounded-[5px] outline-none text-white text-[20px] w-full"
                         />
                         {props.errors.email && props.touched.email && (
                             <span className="text-red-500 text-[12px]">*{props.errors.email}</span>
                         )}
                     </div>
 
-                    <button
+                    <Button
+                        className="mt-10"
                         type="submit"
-                        className="mt-6 w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 transition">
+                    >
                             Send Email Verification
-                    </button>
+                    </Button>
+
+                    <div className="text-black/50">Already have account? <Link href='/auth/login' className="text-[#F6A273] underline">Login</Link></div>
                 </Form>
             )
         }}
