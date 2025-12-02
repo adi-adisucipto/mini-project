@@ -341,3 +341,44 @@ export async function cancelTransactionService(id:string) {
         throw error;
     }
 }
+
+export async function calculateDisc(idEvent:string, ticket:number, pointsToUse?: number, codeCoupon?: string, codeVouche?: string) {
+    try {
+        let discCoupon = 0
+        let discVoucher = 0
+        let pointUse = pointsToUse ?? 0
+        if(!pointsToUse) pointsToUse = 0;
+        if(!codeCoupon) discCoupon = 0;
+        if(!codeVouche) discVoucher = 0;
+        
+        const eventInfo = await getEventById(idEvent);
+        if(!eventInfo) throw createCustomError(404, "Event not found!");
+        const eventPrice = Number(eventInfo.price) * ticket;
+        
+        if(codeCoupon) {
+            const couponInfo = await getCouponByCode(codeCoupon)
+            if(couponInfo) {
+                discCoupon = Number(couponInfo?.discount_amount)
+            }
+        }
+
+        if(codeVouche) {
+            const voucherInfo = await getVoucherByCode(codeVouche)
+            if(voucherInfo) {
+                discVoucher = Number(voucherInfo?.discount_amount)
+            }
+        }
+
+        let totalDis = pointUse + discCoupon + discVoucher;
+
+        if(totalDis > eventPrice) {
+            totalDis = eventPrice
+        }
+
+        return {
+            totalDis
+        }
+    } catch (error) {
+        throw error
+    }
+}
