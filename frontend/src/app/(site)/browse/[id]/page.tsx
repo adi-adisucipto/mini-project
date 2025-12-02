@@ -63,15 +63,15 @@ function page({params}:PageProps) {
 
       <div className="lg:flex justify-between w-[420px] lg:w-[1080px] lg:max-w-[1080px] lg:mt-[70px] mt-[30px]">
         <div className="flex flex-col lg:gap-[50px] gap-5 lg:w-[70%]">
-          <h1 className="lg:text-[50px] text-[30px] font-black tracking-widest leading-none">{data?.name}</h1>
+          <h1 className="lg:text-[36px] text-[30px] font-black tracking-widest leading-none">{data?.name}</h1>
           <p className="lg:hidden text-[25px] font-bold">Rp{Number(data?.price).toLocaleString("id-ID")}</p>
 
           <div className="flex flex-col lg:gap-5 gap-2.5">
-            <h3 className="lg:text-[30px] text-[18px] font-semibold tracking-widest">Date and Time</h3>
+            <h3 className="lg:text-[26px] text-[18px] font-semibold tracking-widest">Date and Time</h3>
 
             <div className="lg:flex hidden items-center gap-5">
-              <Calendar size={40}/>
-              <p className="lg:text-[20px] text-[15px] font-semibold">
+              <Calendar size={30}/>
+              <p className="lg:text-[16px] text-[15px] font-semibold">
                 {data?.start_date instanceof Date 
                   ? data.start_date.toLocaleDateString('id-ID', {
                       weekday: 'long', 
@@ -98,8 +98,8 @@ function page({params}:PageProps) {
             </div>
 
             <div className="lg:flex hidden items-center gap-5">
-              <Clock size={40}/>
-              <p className="text-[20px] font-semibold">12.00 - end</p>
+              <Clock size={30}/>
+              <p className="text-[16px] font-semibold">12.00 - end</p>
             </div>
 
             <div className="lg:hidden flex items-center gap-2.5">
@@ -109,7 +109,7 @@ function page({params}:PageProps) {
           </div>
 
           <div className="flex flex-col lg:gap-5 gap-2.5">
-            <h3 className="lg:text-[30px] text-[18px] font-semibold tracking-widest">Hosted By</h3>
+            <h3 className="lg:text-[26px] text-[18px] font-semibold tracking-widest">Hosted By</h3>
 
             <div className="flex items-center gap-5">
               {avatar ? (
@@ -128,13 +128,13 @@ function page({params}:PageProps) {
           </div>
 
           <div className="flex flex-col lg:gap-5 gap-2">
-            <h3 className="lg:text-[30px] text-[18px] font-semibold tracking-widest">Event Description</h3>
+            <h3 className="lg:text-[26px] text-[18px] font-semibold tracking-widest">Event Description</h3>
             <p className="text-[15px] leading-[1.7]">{data?.description}</p>
           </div>
         </div>
 
         <div className="lg:flex hidden flex-col lg:gap-[15px] lg:items-end lg:w-[30%]">
-          <h1 className="text-[50px] font-semibold tracking-widest">Rp{Number(data?.price).toLocaleString("id-ID")}</h1>
+          <h1 className="text-[30px] font-semibold tracking-widest">Rp{Number(data?.price).toLocaleString("id-ID")}</h1>
           <Link href={`/purchase/${id}`}><Button className="w-[150px]">Buy Ticket</Button></Link>
         </div>
 

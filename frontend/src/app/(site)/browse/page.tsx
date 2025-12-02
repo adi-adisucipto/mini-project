@@ -93,7 +93,7 @@ export default async function BrowsePage({ searchParams }: BrowsePageProps) {
               </p>
               <div className="mt-3">
                 <Link href={`browse/${event.event_id}`}>
-                  <button className="bg-green-950 text-white w-full p-2 rounded-lg hover:bg-green-950/80 cursor-pointer">Event Detail</button>
+                  <button className="bg-[#F6A273] text-white w-full p-2 rounded-lg hover:bg-[#87786C] cursor-pointer">Event Detail</button>
                 </Link>
               </div>
             </article>

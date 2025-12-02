@@ -68,7 +68,7 @@ export default function Navbar() {
           />
           <button
             type="submit"
-            className="rounded-md bg-gray-300 px-4 py-2 text-gray-700"
+            className="rounded-md bg-[#F6A273] px-4 py-2 text-gray-700"
           >
             Search
           </button>
