@@ -9,6 +9,7 @@ export default function Navbar() {
   const role = session?.user?.role;
   const isAuthed = status === "authenticated";
   const isEO = isAuthed && (role === "ORGANIZER" || role === "ADMIN");
+  const isUser = isAuthed && role === "USER";
 
   const [search, setSearch] = useState("");
   const [userMenuOpen, setUserMenuOpen] = useState(false);
