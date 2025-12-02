@@ -259,6 +259,7 @@ function page({params}:PageProps) {
 
                         <div>
                             <label className="text-[20px] font-bold text-white tracking-[0.2em]">COUPON</label>
+                            <hr className="bg-white mt-[5px] mb-2.5 border-0 h-px"/>
                             <input
                                 type="text"
                                 placeholder="Coupon"
@@ -271,6 +272,7 @@ function page({params}:PageProps) {
 
                         <div>
                             <label className="text-[20px] font-bold text-white tracking-[0.2em]">POINTS</label>
+                            <hr className="bg-white mt-[5px] mb-2.5 border-0 h-px"/>
                             <input
                                 type="number"
                                 placeholder="Points"
@@ -281,28 +283,57 @@ function page({params}:PageProps) {
                             />
                         </div>
                     </form>
+                </div>
+            </div>
 
-                    <div className="mt-[25px]">
-                        <hr className="bg-white mb-2.5 border-0 h-px"/>
-                        <div className="flex justify-between">
-                            <div className="text-white text-[20px] font-semibold tracking-[0.2em]">SUBTOTAL</div>
-                            <div className="text-white font-semibold text-[20px]">Rp{data?.price ? (data.price * formik.values.quantity).toLocaleString("id-ID") : ""}</div>
-                        </div>
-                        <div className="flex justify-between">
-                            <div className="text-white text-[20px] font-semibold tracking-[0.2em]">DISCOUNT</div>
-                            <div className="text-white font-semibold text-[20px]">Rp{discount.toLocaleString("id-ID")}</div>
-                        </div>
-                    </div>
+            <div className="w-[50%]">
+                <div>
+                    <h1 className="text-[20px] font-bold text-white tracking-[0.2em]">ITEM</h1>
+                    <hr className="bg-white mt-[5px] mb-2.5 border-0 h-px"/>
+                </div>
 
+                <div className="flex gap-7">
                     <div>
-                        <hr className="bg-white mt-[5px] mb-2.5 border-0 h-px"/>
-                        <div className="flex justify-between">
-                            <div className="text-white text-[25px] font-semibold tracking-[0.2em]">TOTAL</div>
-                            <div className="text-white font-semibold text-[25px]">Rp{data?.price ? (data.price * formik.values.quantity - discount).toLocaleString("id-ID") : 0}</div>
+                        <div className="w-[200px] h-[150px] bg-slate-200 rounded-[10px]"></div>
+                    </div>
+                    <div>
+                        <h1 className="text-white text-[20px] font-bold">{data?.name}</h1>
+                        <p className="text-white text-[17px] font-bold">Rp{Number(data?.price).toLocaleString("id-ID")}</p>
+                        <div className="flex justify-between items-center bg-white/30 gap-5 px-2 py-1 rounded-[5px] w-[70px]">
+                            <div>
+                                <span className="w-8 text-center text-[20px] font-semibold">{formik.values.quantity}</span>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <button
+                                    type="button"
+                                    onClick={increaseQuantity}
+                                    className="border border-black/20 rounded-[5px]"
+                                >
+                                    <ChevronUp size={18}/>
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={decreaseQuantity}
+                                    disabled={formik.values.quantity <= 1}
+                                    className="border border-black/20 rounded-[5px]"
+                                >
+                                    <ChevronDown size={18}/>
+                                </button>
+                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <Button type="submit" onClick={handleButtonClick} className="mt-[30px]">Payment</Button>
+                <div className="mt-[25px]">
+                    <hr className="bg-white mb-2.5 border-0 h-px"/>
+                    <div className="flex justify-between">
+                        <div className="text-white text-[20px] font-semibold tracking-[0.2em]">SUBTOTAL</div>
+                        <div className="text-white font-semibold text-[20px]">Rp{data?.price ? (data.price * formik.values.quantity).toLocaleString("id-ID") : ""}</div>
+                    </div>
+                    <div className="flex justify-between">
+                        <div className="text-white text-[20px] font-semibold tracking-[0.2em]">DISCOUNT</div>
+                        <div className="text-white font-semibold text-[20px]">Rp{discount.toLocaleString("id-ID")}</div>
+                    </div>
                 </div>
             </div>
         </Container>
@@ -311,3 +342,74 @@ function page({params}:PageProps) {
 }
 
 export default page
+
+
+// <div className='md:h-[80vh] py-10 flex justify-center items-center'>
+    //     <div className='md:max-w-2xl rounded-xl max-w-[400px] w-full md:flex shadow-xl'>
+    //         <div className='md:w-[50%] rounded-xl p-8 flex flex-col gap-4'>
+    //             <p className='text-black/70'>{data?.category}</p>
+    //             <h1 className='text-2xl font-bold'>{data?.name}</h1>
+    //             <p className='text-[15px] text-gray-900/70'>{data?.description}</p>
+    //             <p className="font-bold text-3xl text-green-950/70">Rp{data?.price}</p>
+    //         </div>
+            
+    //         <div className='md:w-[50%] flex flex-col gap-5 p-8 md:rounded-l-xl rounded-t-xl md:rounded-t-none bg-gray-200'>
+    //             <form onSubmit={formik.handleSubmit} className="flex flex-col gap-3">
+    //                 <div>
+    //                     <label>Ticket</label>
+    //                     <input
+    //                         type="number"
+    //                         placeholder="Ticket"
+    //                         className="bg-gray-300 w-full p-2 rounded-lg"
+    //                         name="ticket"
+    //                         value={formik.values.ticket}
+    //                         onChange={formik.handleChange}
+    //                     />
+    //                 </div>
+
+    //                 <div>
+    //                     <label>Voucher Code</label>
+    //                     <input
+    //                         type="text"
+    //                         placeholder="Voucher Code"
+    //                         className="bg-gray-300 w-full p-2 rounded-lg"
+    //                         name="codeVouche"
+    //                         value={formik.values.codeVouche}
+    //                         onChange={formik.handleChange}
+    //                     />
+    //                 </div>
+
+    //                 <div>
+    //                     <label>Coupon</label>
+    //                     <input
+    //                         type="text"
+    //                         placeholder="Coupon"
+    //                         className="bg-gray-300 w-full p-2 rounded-lg"
+    //                         name="codeCoupon"
+    //                         value={formik.values.codeCoupon}
+    //                         onChange={formik.handleChange}
+    //                     />
+    //                 </div>
+
+    //                 <div>
+    //                     <label>Points</label>
+    //                     <input
+    //                         type="number"
+    //                         placeholder="Points"
+    //                         className="bg-gray-300 w-full p-2 rounded-lg"
+    //                         name="pointsToUse"
+    //                         value={formik.values.pointsToUse}
+    //                         onChange={formik.handleChange}
+    //                     />
+    //                 </div>
+
+    //                 <div className="">
+    //                     <p className='text-[13px] text-gray-900/70'>Available seats: {data?.available_seats}</p>
+    //                     <button className="bg-green-950 text-white w-full p-2 rounded-lg hover:bg-green-950/80 cursor-pointer"
+    //                         type="submit"
+    //                     >Confirm</button>
+    //                 </div>
+    //             </form>
+    //         </div>
+    //     </div>
+    // </div>
