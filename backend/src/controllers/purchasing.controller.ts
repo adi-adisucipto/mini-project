@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { createTransactionService, getEventById, uploadProofService, getTransactionByUserEmail, cancelTransactionService } from "../services/purchasing.service";
+import { createTransactionService, getEventById, uploadProofService, getTransactionByUserEmail, cancelTransactionService, calculateDisc } from "../services/purchasing.service";
 import { createCustomError } from "../utils/customError";
 
 interface Token extends Request {
@@ -99,6 +99,19 @@ export async function cancelTransactionController(req:Request, res:Response, nex
 
         res.status(200).json({
             message: "Berhasil membatalkan pembelian"
+        })
+    } catch (error) {
+        next(error);
+    }
+}
+
+export async function calculateDiscController(req:Request, res:Response, next:NextFunction) {
+    try {
+        const {idEvent, ticket, pointsToUse, codeCoupon, codeVouche} = req.body
+        const disc = await calculateDisc(idEvent, ticket, pointsToUse, codeCoupon, codeVouche);
+
+        res.status(200).json({
+            disc
         })
     } catch (error) {
         next(error);
