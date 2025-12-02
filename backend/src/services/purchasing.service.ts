@@ -8,7 +8,10 @@ import { cloudinaryUplaod } from "../utils/cloudinary";
 export async function getEventById(id: string) {
     try {
         const data = await prisma.event.findUnique({
-            where: { event_id: id }
+            where: { event_id: id },
+            include: {
+                organizer: true
+            }
         });
 
         return data
