@@ -1,0 +1,10 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const auth_middleware_1 = require("../middlewares/auth.middleware");
+const eoTransaction_controller_1 = require("../controllers/eoTransaction.controller");
+const router = (0, express_1.Router)();
+router.get("/", auth_middleware_1.authMiddleware, auth_middleware_1.organizerOnly, eoTransaction_controller_1.getEOTransactions);
+router.patch("/:id/accept", auth_middleware_1.authMiddleware, auth_middleware_1.organizerOnly, eoTransaction_controller_1.acceptEOTransaction);
+router.patch("/:id/reject", auth_middleware_1.authMiddleware, auth_middleware_1.organizerOnly, eoTransaction_controller_1.rejectEOTransaction);
+exports.default = router;
