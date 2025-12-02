@@ -120,9 +120,7 @@ export async function createCoupon(user_id:string, username:string) {
                 user_id: user_id,
                 code: username + code(),
                 discount_amount: 20000,
-                expiration_date,
-                is_used: false,
-                used_at: expiration_date
+                expiration_date: expiration_date,
             }
         })
     } catch (error) {
@@ -143,7 +141,6 @@ export async function verifyService(token:string, params:Prisma.UserUncheckedCre
     try {
         const tokenExist = await getRegisterToken(token);
         if(!tokenExist) throw createCustomError(403, "Invalid token");
-        console.log(token)
 
         let userReferrerId: string | null = null;
 
@@ -166,9 +163,9 @@ export async function verifyService(token:string, params:Prisma.UserUncheckedCre
                     referrerId:userReferrerId
                 }
             });
-            
+
             if(referrerCode && userReferrerId) {
-                await createCoupon(newUser.user_id, newUser.username);
+                await createCoupon(userReferrerId, newUser.username);
                 await createPointTransaction(userReferrerId);
             }
         })
