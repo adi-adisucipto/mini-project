@@ -246,6 +246,18 @@ function page({params}:PageProps) {
                 <div>
                     <form onSubmit={formik.handleSubmit} className="flex flex-col gap-[30px]">
                         <div>
+                            <label className="text-[20px] font-bold text-white tracking-[0.2em]">Quantity</label>
+                            <input
+                                type="text"
+                                placeholder="Quantity"
+                                className="bg-white/30 px-4 py-3 rounded-[5px] outline-none text-white text-[17px] w-full"
+                                name="quantity"
+                                value={formik.values.quantity}
+                                onChange={formik.handleChange}
+                            />
+                        </div>
+
+                        <div>
                             <label className="text-[20px] font-bold text-white tracking-[0.2em]">VOUCHER</label>
                             <input
                                 type="text"
@@ -282,58 +294,29 @@ function page({params}:PageProps) {
                                 onChange={formik.handleChange}
                             />
                         </div>
-                    </form>
-                </div>
-            </div>
 
-            <div className="w-[50%]">
-                <div>
-                    <h1 className="text-[20px] font-bold text-white tracking-[0.2em]">ITEM</h1>
-                    <hr className="bg-white mt-[5px] mb-2.5 border-0 h-px"/>
-                </div>
-
-                <div className="flex gap-7">
-                    <div>
-                        <div className="w-[200px] h-[150px] bg-slate-200 rounded-[10px]"></div>
-                    </div>
-                    <div>
-                        <h1 className="text-white text-[20px] font-bold">{data?.name}</h1>
-                        <p className="text-white text-[17px] font-bold">Rp{Number(data?.price).toLocaleString("id-ID")}</p>
-                        <div className="flex justify-between items-center bg-white/30 gap-5 px-2 py-1 rounded-[5px] w-[70px]">
-                            <div>
-                                <span className="w-8 text-center text-[20px] font-semibold">{formik.values.quantity}</span>
+                        <div className="mt-[25px]">
+                            <hr className="bg-white mb-2.5 border-0 h-px"/>
+                            <div className="flex justify-between">
+                                <div className="text-white text-[20px] font-semibold tracking-[0.2em]">SUBTOTAL</div>
+                                <div className="text-white font-semibold text-[20px]">Rp{data?.price ? (data.price * formik.values.quantity).toLocaleString("id-ID") : ""}</div>
                             </div>
-                            <div className="flex flex-col gap-1">
-                                <button
-                                    type="button"
-                                    onClick={increaseQuantity}
-                                    className="border border-black/20 rounded-[5px]"
-                                >
-                                    <ChevronUp size={18}/>
-                                </button>
-                                <button
-                                    type="button"
-                                    onClick={decreaseQuantity}
-                                    disabled={formik.values.quantity <= 1}
-                                    className="border border-black/20 rounded-[5px]"
-                                >
-                                    <ChevronDown size={18}/>
-                                </button>
+                            <div className="flex justify-between">
+                                <div className="text-white text-[20px] font-semibold tracking-[0.2em]">DISCOUNT</div>
+                                <div className="text-white font-semibold text-[20px]">Rp{discount.toLocaleString("id-ID")}</div>
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                <div className="mt-[25px]">
-                    <hr className="bg-white mb-2.5 border-0 h-px"/>
-                    <div className="flex justify-between">
-                        <div className="text-white text-[20px] font-semibold tracking-[0.2em]">SUBTOTAL</div>
-                        <div className="text-white font-semibold text-[20px]">Rp{data?.price ? (data.price * formik.values.quantity).toLocaleString("id-ID") : ""}</div>
-                    </div>
-                    <div className="flex justify-between">
-                        <div className="text-white text-[20px] font-semibold tracking-[0.2em]">DISCOUNT</div>
-                        <div className="text-white font-semibold text-[20px]">Rp{discount.toLocaleString("id-ID")}</div>
-                    </div>
+                        <div>
+                            <hr className="bg-white mt-[5px] mb-2.5 border-0 h-px"/>
+                            <div className="flex justify-between">
+                                <div className="text-white text-[25px] font-semibold tracking-[0.2em]">TOTAL</div>
+                                <div className="text-white font-semibold text-[25px]">Rp{data?.price ? (data.price * formik.values.quantity - discount).toLocaleString("id-ID") : 0}</div>
+                            </div>
+                        </div>
+
+                        <Button type="submit" onClick={handleButtonClick}>Payment</Button>
+                    </form>
                 </div>
             </div>
         </Container>
