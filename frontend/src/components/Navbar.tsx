@@ -12,7 +12,8 @@ export default function Navbar() {
   const isUser = isAuthed && role === "USER";
 
   const [search, setSearch] = useState("");
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [mobileOpen, setMobileOpen] = useState(false);
 
   const avatar = session?.user?.avatar;
 
@@ -23,17 +24,41 @@ export default function Navbar() {
     router.push(`/browse?${params.toString()}`);
   };
 
+  const navLinks = [
+    ...(isEO
+      ? [
+          { label: "Create Events", href: "/events/create" },
+          { label: "Transactions", href: "/eo/transactions" },
+          { label: "Events Manager", href: "/eo/events" },
+        ]
+      : [
+          { label: "Browse Events", href: "/browse" },
+          { label: "Tickets", href: "/tickets" },
+        ]),
+  ];
+
+  const navigate = (href: string) => {
+    router.push(href);
+    setMobileOpen(false);
+  };
+
   return (
     <header className="w-full border-b bg-gray-200">
-      <div className="mx-auto flex max-w-6xl items-center gap-4 px-6 py-3">
+      <div className="mx-auto flex max-w-6xl items-center gap-4 px-4 py-3 md:px-6">
         <div
-          onClick={() => router.push("/")}
-          className="h-10 w-24 bg-gray-400 cursor-pointer"
-        />
+          onClick={() => navigate("/")}
+          className="h-10 w-24  cursor-pointer">
+
+            <img
+      src="/events-logo.png"
+      alt="Events logo"
+      className="h-10 w-24 object-cover rounded-xl"
+    />
+        </div>
 
         <form
           onSubmit={submitSearch}
-          className="flex flex-1 max-w-2xl items-center gap-2"
+          className="flex flex-1 items-center gap-2"
         >
           <input
             value={search}
@@ -43,92 +68,62 @@ export default function Navbar() {
           />
           <button
             type="submit"
-            className="rounded-md bg-gray-500 px-4 py-2 text-white"
+            className="rounded-md bg-gray-300 px-4 py-2 text-gray-700"
           >
             Search
           </button>
         </form>
 
-        <div className="flex items-center gap-4 text-sm text-gray-700">
-          {isEO && (
+        {/* Desktop nav */}
+        <div className="hidden items-center gap-4 text-sm text-gray-700 md:flex">
+          {navLinks.map((link) => (
             <button
-              onClick={() => router.push("/events/create")}
-              className="hover:text-blue-600"
+              key={link.href}
+              onClick={() => navigate(link.href)}
+              className="hover:text-[#F6A273] cursor-pointer"
             >
-              Create Events
+              {link.label}
             </button>
-          )}
-          {isEO && (
-            <button
-              onClick={() => router.push("/eo/transactions")}
-              className="hover:text-blue-600"
-            >
-              Transactions
-            </button>
-          )}
-          {isEO && (
-            <button
-              onClick={() => router.push("/eo/events")}
-              className="hover:text-blue-600"
-            >
-              Events Manager
-            </button>
-          )}
-          {!isEO && (
-            <button
-              onClick={() => router.push("/browse")}
-              className="hover:text-blue-600"
-            >
-              Browse Events
-            </button>
-          )}
-          {!isEO && (
-            <button
-              onClick={() => router.push("/tickets")}
-              className="hover:text-blue-600"
-            >
-              Tickets
-            </button>
-          )}
+          ))}
 
           {isAuthed ? (
             <div
               className="relative"
-              onMouseEnter={() => setMenuOpen(true)}
-              onMouseLeave={() => setMenuOpen(false)}
+              onMouseEnter={() => setUserMenuOpen(true)}
+              onMouseLeave={() => setUserMenuOpen(false)}
             >
               <button
-                onClick={() => setMenuOpen((v) => !v)}
+                onClick={() => setUserMenuOpen((v) => !v)}
                 className="flex items-center gap-2 rounded-md bg-gray-300 px-3 py-2 focus:outline-none"
               >
-                {avatar === null ? (
-                  <span className="h-6 w-6 rounded bg-white" />
+                {avatar ? (
+                  <img src={avatar} className="h-6 w-6 rounded" />
                 ) : (
-                  <img src={avatar} className="h-6 w-6 rounded"></img>
+                  <span className="h-6 w-6 rounded bg-white" />
                 )}
-                <span className="text-sm text-gray-800">
-                  {session.user?.name || session.user?.email}
+                <span className="text-sm text-gray-700">
+                  {session?.user?.name || session?.user?.email}
                 </span>
                 <span className="text-gray-600">▾</span>
               </button>
 
-              {menuOpen && (
-                <div className="absolute right-0 top-full w-48 rounded-b-lg bg-gray-300 p-3 text-left text-sm text-gray-800 shadow-lg">
+              {userMenuOpen && (
+                <div className="absolute right-0 top-full w-48 rounded-b-lg bg-gray-300 p-3 text-left text-sm text-gray-700 shadow-lg">
                   <button
-                    onClick={() => router.push(`/profile`)}
-                    className="block w-full text-left py-1 hover:text-blue-600"
+                    onClick={() => navigate("/profile")}
+                    className="block w-full text-left py-1 hover:text-[#F6A273] cursor-pointer"
                   >
                     Profile
                   </button>
                   <button
-                    onClick={() => router.push("/account")}
-                    className="block w-full text-left py-1 hover:text-blue-600"
+                    onClick={() => navigate("/account")}
+                    className="block w-full text-left py-1 hover:text-[#F6A273] cursor-pointer"
                   >
                     Account Settings
                   </button>
                   <button
                     onClick={() => signOut()}
-                    className="block w-full text-left py-1 hover:text-blue-600"
+                    className="block w-full text-left py-1 hover:text-[#F6A273] cursor-pointer"
                   >
                     Log out
                   </button>
@@ -138,21 +133,84 @@ export default function Navbar() {
           ) : (
             <>
               <button
-                onClick={() => router.push("/auth/login")}
-                className="rounded-md border px-3 py-1 hover:text-blue-600"
+                onClick={() => navigate("/auth/login")}
+                className="rounded-md border px-3 py-1 hover:text-[#F6A273] cursor-pointer"
               >
                 Login
               </button>
               <button
-                onClick={() => router.push("/auth/register")}
-                className="rounded-md border px-3 py-1 hover:text-blue-600"
+                onClick={() => navigate("/auth/register")}
+                className="rounded-md border px-3 py-1 hover:text-[#F6A273] cursor-pointer"
               >
                 Sign up
               </button>
             </>
           )}
         </div>
+
+        {/*in hamburgernya*/}
+        <button
+          className="ml-auto rounded p-2 hover:bg-gray-300 md:hidden"
+          onClick={() => setMobileOpen((v) => !v)}
+        >
+          <span className="block h-0.5 w-6 bg-gray-800 mb-1" />
+          <span className="block h-0.5 w-6 bg-gray-800 mb-1" />
+          <span className="block h-0.5 w-6 bg-gray-800" />
+        </button>
       </div>
+
+      {/*dropdown mobile*/}
+      {mobileOpen && (
+        <div className="md:hidden border-t bg-gray-100 px-4 py-3 space-y-2 text-sm text-gray-700">
+          {navLinks.map((link) => (
+            <button
+              key={link.href}
+              onClick={() => navigate(link.href)}
+              className="block w-full text-left py-2 hover:text-[#F6A273] cursor-pointer"
+            >
+              {link.label}
+            </button>
+          ))}
+
+          {isAuthed ? (
+            <>
+              <button
+                onClick={() => { navigate("/profile"); }}
+                className="block w-full text-left py-2 hover:text-[#F6A273] cursor-pointer"
+              >
+                Profile
+              </button>
+              <button
+                onClick={() => { navigate("/account"); }}
+                className="block w-full text-left py-2 hover:text-[#F6A273] cursor-pointer"
+              >
+                Account Settings
+              </button>
+              <button
+                onClick={() => { signOut(); setMobileOpen(false); }}
+                className="block w-full text-left py-2 hover:text-[#F6A273] cursor-pointer"
+              >
+                Log out
+              </button>
+            </>
+          ) : (
+            <>
+              <button
+                onClick={() => navigate("/auth/login")}
+                className="block w-full text-left py-2 hover:text-[#F6A273] cursor-pointer"
+              >
+                Login
+              </button>
+              <button
+                onClick={() => navigate("/auth/register")}
+                className="block w-full text-left py-2 hover:text-[#F6A273] cursor-pointer"
+              >
+                Sign up
+              </button>
+            </>
+          )}
+        </div>
+      )}
     </header>
   );
 }

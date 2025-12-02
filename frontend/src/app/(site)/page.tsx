@@ -1,30 +1,70 @@
 // src/app/page.tsx
 // jangan lupa buat sitemapping like this src/app/(site)/page.tsx src/app/(site)/layout.tsx biar isa bedain yang mana ada navbar and yang gada
+import Link from "next/link";
 
-export default function HomePage() {
+type Event = {
+  event_id: string;
+  location: string;
+};
+
+async function getEvents(): Promise<Event[]> {
+  const base = process.env.NEXT_PUBLIC_API_URL;
+  if (!base) return [];
+  try {
+    const res = await fetch(`${base}/events`, { cache: "no-store" });
+    if (!res.ok) return [];
+    return res.json();
+  } catch {
+    return [];
+  }
+}
+
+export default async function HomePage() {
+
+  const events = await getEvents();
+
+  const cityCounts = new Map<string, number>();
+  for (const ev of events) {
+    if (!ev.location) continue;
+    cityCounts.set(ev.location, (cityCounts.get(ev.location) || 0) + 1);
+  }
+  const cities = Array.from(cityCounts.entries()).sort((a, b) => b[1] - a[1]);
+
   return (
     <main className=" bg-white">
       {/* hero banner */}
       <section className="mx-auto mt-6 w-full max-w-6xl px-6">
-        <div className="h-80 w-full rounded-xl bg-gray-300" />
+        <div>
+          <img
+      src="/banner.jpg"
+      alt="Events banner"
+      className="h-80 w-full object-cover rounded-xl"
+    />
+        </div>
       </section>
 
-      {/* categories */}
+      {/* cities */}
       <section className="mx-auto mt-8 w-full max-w-6xl px-6">
-        <div className="grid grid-cols-2 gap-3 md:grid-cols-5">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <div
-              key={i}
-              className="flex items-center gap-3 rounded-lg bg-gray-100 px-4 py-3"
-            >
-              <div className="h-8 w-8 rounded-full bg-gray-300" />
-              <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-700">Category</p>
-                <p className="text-xs text-gray-500">20 events</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        <h2 className="mb-3 text-lg font-semibold text-gray-700">Browse by city</h2>
+        {cities.length === 0 ? (
+          <p className="text-sm text-gray-500">No events available yet.</p>
+        ) : (
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-5">
+            {cities.map(([city, count]) => (
+              <Link
+                key={city}
+                href={`/browse?location=${encodeURIComponent(city)}`}
+                className="flex items-center gap-3 rounded-lg bg-gray-100 px-4 py-3 hover:bg-[#F6A273]"
+              >
+                <div className="h-8 w-8 rounded-full bg-gray-300" />
+                <div className="space-y-1">
+                  <p className="text-sm font-medium text-gray-700">{city}</p>
+                  <p className="text-xs text-gray-500">{count} events</p>
+                </div>
+              </Link>
+            ))}
+          </div>
+        )}
       </section>
 
       {/* discount events */}
@@ -32,7 +72,13 @@ export default function HomePage() {
         <h2 className="mb-4 text-center text-lg font-semibold text-gray-700">
           Discount promotion / Top Events
         </h2>
-        <div className="h-40 w-full rounded-lg bg-gray-300" />
+        <div className="h-40 w-full rounded-lg bg-gray-300">
+          <img
+      src="/banner-three.jpeg"
+      alt="Events banner"
+      className="h-40 w-full object-cover rounded-xl"
+    />
+        </div>
       </section>
 
       {/* events di location */}
