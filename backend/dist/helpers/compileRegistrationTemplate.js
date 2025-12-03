@@ -41,13 +41,12 @@ exports.compileDetailPay = compileDetailPay;
 const fs = __importStar(require("fs/promises"));
 const handlebars_1 = require("handlebars");
 const path_1 = __importDefault(require("path"));
-const env_config_1 = require("../configs/env.config");
 async function compileRegistrationTemplate(token) {
     const targetPath = path_1.default.join(__dirname, "../templates", "registration.hbs");
     const templateSrc = await fs.readFile(targetPath, "utf-8");
     const compiledTemplate = (0, handlebars_1.compile)(templateSrc);
     return compiledTemplate({
-        redirect_url: `${env_config_1.BASE_WEB_URL}/auth/verify?token=${token}`
+        redirect_url: `https://mini-project-gqlo.vercel.app/auth/verify?token=${token}`
     });
 }
 async function compileDetailPay(username, event_name, ticket, subtotal, total) {
