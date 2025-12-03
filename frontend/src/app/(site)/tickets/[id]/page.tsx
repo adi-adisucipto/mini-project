@@ -32,7 +32,7 @@ function page({params} : PageProps) {
             const formData = new FormData();
 
             if(bukti) formData.append('bukti', bukti);
-            await axios.post(`http://localhost:8000/api/transaction/upload/${id}`, formData, {
+            await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/transaction/upload/${id}`, formData, {
               headers: {
                 Authorization: `Bearer ${accessToken}`
               }

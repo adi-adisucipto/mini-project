@@ -40,7 +40,7 @@ function page({params}:PageProps) {
     useEffect(() => {
         const eventInfo = async () => {
             try {
-                const event = await axios.get(`http://localhost:8000/api/transaction/event/${id}`);
+                const event = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/transaction/event/${id}`);
                 setData(event.data.user);
             } catch (error) {
                 throw error;
@@ -57,7 +57,7 @@ function page({params}:PageProps) {
         onSubmit: async () => {
             try {
                 const { ticket, pointsToUse, codeCoupon, codeVouche, quantity } = formik.values;
-                const data = await axios.post(`http://localhost:8000/api/transaction/purchase/${id}`, 
+                const data = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/transaction/purchase/${id}`, 
                     {
                         ticket: quantity,
                         pointsToUse,
@@ -80,7 +80,7 @@ function page({params}:PageProps) {
 
     const calculateDisc = async () => {
         const { ticket, pointsToUse, codeCoupon, codeVouche, quantity } = formik.values;
-        const disc = await axios.post("http://localhost:8000/api/transaction/disc",
+        const disc = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/transaction/disc`,
             {
                 idEvent: id,
                 ticket: quantity,

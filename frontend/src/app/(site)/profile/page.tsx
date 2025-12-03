@@ -31,7 +31,7 @@ function Profile() {
       if(status === "authenticated" && session) {
         const user = async () => {
             try {
-              const userInfo = await axios.post(`http://localhost:8000/api/profile/profile`, 
+              const userInfo = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/profile/profile`, 
                 {
                   email: email
                 },

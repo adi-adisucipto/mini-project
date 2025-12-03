@@ -47,7 +47,7 @@ function page() {
             const email =  session?.user?.email
             const transactionInfo = async () => {
                 try {
-                    const transaction = await axios.post(`http://localhost:8000/api/transaction/tickets`, { email });
+                    const transaction = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/transaction/tickets`, { email });
                     setDatas(transaction.data.data);
                 } catch (error) {
                     throw error;
@@ -59,7 +59,7 @@ function page() {
 
     const handleClick = async (id:string) => {
         try {
-            const cancel = await axios.post(`http://localhost:8000/api/transaction/cancel`, { id });
+            const cancel = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/transaction/cancel`, { id });
             window.location.reload();
         } catch (error) {
             console.log(error)

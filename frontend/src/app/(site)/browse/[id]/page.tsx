@@ -39,7 +39,7 @@ function page({params}:PageProps) {
     useEffect(() => {
         const eventInfo = async () => {
             try {
-                const event = await axios.get(`http://localhost:8000/api/transaction/event/${id}`);
+                const event = await axios.get(`${process.env.NEXT_PUBLIC_API_URL}/transaction/event/${id}`);
                 const rawData = event.data.user;
                 setEo(event.data.user.organizer.username)
                 setAvatar(event.data.user.organizer.avatar)
