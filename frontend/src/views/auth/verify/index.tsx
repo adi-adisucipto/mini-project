@@ -1,5 +1,3 @@
-"use client"
-
 import VerifyForm from "./components/verifyForm"
 
 function VerifyView() {
