@@ -1,11 +1,10 @@
-import VerifyView from '@/views/auth/verify'
+import { Suspense } from 'react';
+import VerifyForm from '@/views/auth/verify/components/verifyForm';
 
-function Verify() {
+export default function VerifyPage() {
   return (
-    <div>
-      <VerifyView/>
-    </div>
-  )
+    <Suspense fallback={<div>Loading verification data...</div>}>
+      <VerifyForm />
+    </Suspense>
+  );
 }
-
-export default Verify
