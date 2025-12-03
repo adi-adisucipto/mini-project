@@ -1,7 +1,7 @@
 import * as fs from "fs/promises";
 import { compile } from "handlebars";
 import path from "path";
-import { BASE_WEB_API } from "../configs/env.config";
+import { BASE_WEB_URL } from "../configs/env.config";
 
 export async function compileRegistrationTemplate(token:string) {
     const targetPath = path.join(__dirname, "../templates", "registration.hbs");
@@ -9,7 +9,7 @@ export async function compileRegistrationTemplate(token:string) {
     const compiledTemplate = compile(templateSrc);
 
     return compiledTemplate({
-        redirect_url: `${BASE_WEB_API}/auth/verify?token=${token}`
+        redirect_url: `${BASE_WEB_URL}/auth/verify?token=${token}`
     });
 }
 
