@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SECRET_REFRESH_KEY = exports.SECRET_ACCESS_KEY = exports.SECRET_KEY = exports.BASE_WEB_API = exports.GMAIL_EMAIL = exports.GMAIL_APP_PASS = exports.CLOUDINARY_CLOUD_NAME = exports.CLOUDINARY_API_SECRET = exports.CLOUDINARY_API_KEY = exports.PORT = void 0;
+exports.SECRET_REFRESH_KEY = exports.SECRET_ACCESS_KEY = exports.SECRET_KEY = exports.BASE_WEB_URL = exports.GMAIL_EMAIL = exports.GMAIL_APP_PASS = exports.CLOUDINARY_CLOUD_NAME = exports.CLOUDINARY_API_SECRET = exports.CLOUDINARY_API_KEY = exports.PORT = void 0;
 require("dotenv/config");
 const PORT = process.env.PORT;
 exports.PORT = PORT;
@@ -14,8 +14,8 @@ const GMAIL_EMAIL = process.env.GMAIL_EMAIL;
 exports.GMAIL_EMAIL = GMAIL_EMAIL;
 const GMAIL_APP_PASS = process.env.GMAIL_APP_PASS;
 exports.GMAIL_APP_PASS = GMAIL_APP_PASS;
-const BASE_WEB_API = process.env.BASE_WEB_API;
-exports.BASE_WEB_API = BASE_WEB_API;
+const BASE_WEB_URL = process.env.BASE_WEB_URL;
+exports.BASE_WEB_URL = BASE_WEB_URL;
 const SECRET_KEY = process.env.SECRET_KEY || '';
 exports.SECRET_KEY = SECRET_KEY;
 const SECRET_ACCESS_KEY = process.env.SECRET_ACCESS_KEY || "";

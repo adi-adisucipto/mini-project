@@ -47,7 +47,7 @@ async function compileRegistrationTemplate(token) {
     const templateSrc = await fs.readFile(targetPath, "utf-8");
     const compiledTemplate = (0, handlebars_1.compile)(templateSrc);
     return compiledTemplate({
-        redirect_url: `${env_config_1.BASE_WEB_API}/auth/verify?token=${token}`
+        redirect_url: `${env_config_1.BASE_WEB_URL}/auth/verify?token=${token}`
     });
 }
 async function compileDetailPay(username, event_name, ticket, subtotal, total) {
