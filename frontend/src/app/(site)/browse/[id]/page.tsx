@@ -4,7 +4,7 @@ import axios from "axios";
 import { useEffect, use, useState } from "react";
 import Link from "next/link";
 import Button from "@/components/Button";
-import { Calendar, Clock, User } from "lucide-react";
+import { Calendar, Clock, FileText, MapPin, NotebookText, Ticket, User } from "lucide-react";
 import Image from "next/image";
 
 interface PageProps {
@@ -34,7 +34,7 @@ interface EventData {
 function page({params}:PageProps) {
     const [data, setData] = useState<EventData | null>(null);
     const [eo, setEo] = useState<string>("")
-    const [avatar, setAvatar] = useState<string>("")
+    const [avatar, setAvatar] = useState<string | null>(null)
     const {id} =  use(params);
     useEffect(() => {
         const eventInfo = async () => {
@@ -54,91 +54,122 @@ function page({params}:PageProps) {
                 
             }
         }
-
         eventInfo()
     }, [id]);
   return (
-    <div className="flex flex-col items-center justify-center lg:w-full lg:my-20 my-5">
-      <div className="lg:w-[1080px] w-[420px] lg:h-[433px] h-[203px] bg-slate-200 rounded-[15px]"></div>
+    <div className="w-full">
+      <div className="w-full xl:h-[285px] h-[300px] relative">
+        <Image src="/party.jpg" alt="cover" fill={true} className="w-full absolute object-cover xl:bg-blend-overlay" />
+        <div className="w-full h-[285px] xl:bg-black/30 xl:backdrop-blur-xl absolute">
+          <div className="max-w-7xl px-8 xl:p-0 p-5 mx-auto xl:flex hidden justify-between">
+            <div className="text-white pt-[50px] flex flex-col gap-[25px]">
+              <h1 className="text-[25px] font-bold">{data?.name}</h1>
+              <div className="flex gap-[15px]">
+                <MapPin/>
+                <p className="text-[17px]">{data?.location}</p>
+              </div>
 
-      <div className="lg:flex justify-between w-[420px] lg:w-[1080px] lg:max-w-[1080px] lg:mt-[70px] mt-[30px]">
-        <div className="flex flex-col lg:gap-[50px] gap-5 lg:w-[70%]">
-          <h1 className="lg:text-[36px] text-[30px] font-black tracking-widest leading-none">{data?.name}</h1>
-          <p className="lg:hidden text-[25px] font-bold">Rp{Number(data?.price).toLocaleString("id-ID")}</p>
-
-          <div className="flex flex-col lg:gap-5 gap-2.5">
-            <h3 className="lg:text-[26px] text-[18px] font-semibold tracking-widest">Date and Time</h3>
-
-            <div className="lg:flex hidden items-center gap-5">
-              <Calendar size={30}/>
-              <p className="lg:text-[16px] text-[15px] font-semibold">
-                {data?.start_date instanceof Date 
-                  ? data.start_date.toLocaleDateString('id-ID', {
-                      weekday: 'long', 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric'
-                    })
-                  : 'Tanggal Tidak Tersedia'
-                }</p>
+              <div className="flex gap-[15px]">
+                <Calendar/>
+                <p className="text-[17px]">{data?.end_date.toLocaleDateString("id-Id", {day: "numeric", month: "long", year: "numeric"})}</p>
+              </div>
             </div>
 
-            <div className="lg:hidden flex items-center gap-2.5">
-              <Calendar size={30}/>
-              <p className="text-[15px] font-semibold">
-                {data?.start_date instanceof Date 
-                  ? data.start_date.toLocaleDateString('id-ID', {
-                      weekday: 'long', 
-                      year: 'numeric', 
-                      month: 'long', 
-                      day: 'numeric'
-                    })
-                  : 'Tanggal Tidak Tersedia'
-                }</p>
-            </div>
-
-            <div className="lg:flex hidden items-center gap-5">
-              <Clock size={30}/>
-              <p className="text-[16px] font-semibold">12.00 - end</p>
-            </div>
-
-            <div className="lg:hidden flex items-center gap-2.5">
-              <Clock size={30}/>
-              <p className="text-[15px] font-semibold">12.00 - end</p>
+            <div className="w-[500px] h-60 relative mt-[45px] rounded-t-lg">
+              <Image src="/party.jpg" alt="cover" fill={true} className="absolute object-cover rounded-t-lg"/>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div className="flex flex-col lg:gap-5 gap-2.5">
-            <h3 className="lg:text-[26px] text-[18px] font-semibold tracking-widest">Hosted By</h3>
+      <div className="max-w-7xl px-8 xl:p-0 p-5 mx-auto xl:flex justify-between">
+        <div className="xl:py-[30px]">
+          <div className="xl:hidden flex flex-col mb-[25px]">
+            <h1 className="text-[21px] font-bold">{data?.name}</h1>
+          </div>
 
-            <div className="flex items-center gap-5">
-              {avatar ? (
-                <Image src={avatar} fill={true} alt="avatar" className="lg:w-[60px] lg:h-[60px] w-[50px] h-[50px] rounded-full"/>
-              ) : (
-                <div className="lg:w-[60px] lg:h-[60px] w-[50px] h-[50px] rounded-full bg-[#D9D9D9] flex justify-center items-center">
-                  <User/>
+          <div className="flex lg:gap-[5px] gap-[18px] items-center">
+            <NotebookText className="w-[30px] h-[30px] stroke-3 "/>
+            <p className="text-[26px] font-bold">Description</p>
+          </div>
+          <p className="mt-2.5 leading-6">{data?.description}</p>
+
+          <div className="flex gap-[5px] mt-[45px] items-center">
+            <Ticket className="w-[30px] h-[30px] stroke-3"/>
+            <p className="text-[26px] font-bold">Ticket</p>
+          </div>
+          <div className="xl:w-[680px] xl:h-[85px] w-full flex xl:flex-row flex-col xl:justify-between xl:items-center border px-[15px] xl:py-0 py-[5px] rounded-[5px] mt-2.5 shadow-lg">
+            <div className="text-[20px] hidden lg:flex">{Number(data?.price).toLocaleString("id-ID", {style: "currency", currency: "IDR"})}</div>
+            <div className="text-[20px]">{data?.name}</div>
+            <div className="lg:hidden flex text-[20px]">{Number(data?.price).toLocaleString("id-ID", {style: "currency", currency: "IDR"})}</div>
+            {data?.available_seats !== 0 ? (
+              <div className="text-[13px] lg:px-2.5 lg:py-[3px] p-2.5 font-semibold bg-[#EEFDF3] lg:rounded-none rounded-[5px]">Available</div>
+            ) : (
+              <div className="text-[13px] lg:px-2.5 lg:py-[3px] p-2.5 font-semibold text-white bg-red-500 lg:rounded-none rounded-[5px]">Not Available</div>
+            )}
+          </div>
+
+          <div className="flex gap-[5px] mt-[45px] items-center">
+            <FileText className="w-[30px] h-[30px] stroke-3"/>
+            <p className="text-[26px] font-bold">Terms and Conditions</p>
+          </div>
+          <div className="mt-2.5 leading-6 xl:w-[680px]">
+            <p className="leading-6">1. Tiket Tidak Dapat Diuangkan Kembali.
+            Seluruh pembelian tiket bersifat final dan non-refundable, kecuali apabila terjadi pembatalan dari pihak penyelenggara.</p>
+            <p className="leading-6">2. Tiket Bersifat Terbatas.
+            Tiket hanya berlaku untuk tanggal dan sesi acara yang tertera.
+            Pastikan hadir sesuai jadwal agar pengalaman acara tetap optimal.</p>
+            <p className="leading-6">3. Ketentuan Lainnya.
+            Penyelenggara berhak melakukan perubahan waktu, lokasi, atau susunan acara dengan pemberitahuan sebelumnya melalui email.</p>
+          </div>
+        </div>
+
+        <div className="xl:w-[500px] h-[350px] border-x border-b rounded-b-lg shadow-lg p-[15px] xl:flex flex-col hidden">
+          <div className="flex justify-between items-center">
+            <h1 className="text-[17px] font-bold">{Number(data?.price).toLocaleString("id-ID", {style: "currency", currency: "IDR"})}</h1>
+            <button className="text-[16px] font-semibold text-white bg-[#F6A273] px-[27px] py-4 rounded-[10px] cursor-pointer hover:bg-[#f0b492]">Beli Tiket</button>
+          </div>
+
+          <div className="mt-[35px] flex flex-col gap-[15px]">
+            <h1 className="text-[25px] font-bold">{data?.name}</h1>
+            <div className="flex gap-[15px]">
+              <MapPin/>
+              <p className="text-[17px]">{data?.location}</p>
+            </div>
+            <div className="flex gap-[15px]">
+              <Calendar/>
+              <p className="text-[17px]">{data?.end_date.toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric"})}</p>
+            </div>
+
+            <div className="mt-[25px]">
+              <hr className="opacity-20"/>
+              <div className="mt-[15px] flex gap-2.5 items-center">
+                <div>{ avatar === null ? (
+                  <div className="w-10 h-10 rounded-full bg-black/30 flex justify-center items-center">
+                    <User/>
+                  </div>
+                ) : (
+                  <Image src={avatar} fill={true} alt="avatar" className="w-10 h-10 rounded-full"/>
+                )}</div>
+                <div>
+                  <p className="text-[15px] opacity-50">Diselenggarakan oleh</p>
+                  <p className="text-[16px] font-bold">{eo}</p>
                 </div>
-              )}
-
-              <div className="flex flex-col gap-[15px]">
-                <h4 className="lg:text-[20px] text-[15px] font-semibold">{eo}</h4>
-                <Button className="lg:h-[26px] h-5 lg:text-[15px] text-[10px] flex justify-center items-center">Profile</Button>
               </div>
             </div>
           </div>
+        </div>
+      </div>
 
-          <div className="flex flex-col lg:gap-5 gap-2">
-            <h3 className="lg:text-[26px] text-[18px] font-semibold tracking-widest">Event Description</h3>
-            <p className="text-[15px] leading-[1.7]">{data?.description}</p>
-          </div>
+      <div className="w-full h-[115px] px-[25px] xl:hidden">
+        <div className="flex justify-between">
+          <p className="text-[13px] opacity-40">Harga mulai dari</p>
+          <h2 className="font-bold text-[19px]">{Number(data?.price).toLocaleString("id-Id", {style: "currency", currency: "IDR"})}</h2>
         </div>
 
-        <div className="lg:flex hidden flex-col lg:gap-[15px] lg:items-end lg:w-[30%]">
-          <h1 className="text-[30px] font-semibold tracking-widest">Rp{Number(data?.price).toLocaleString("id-ID")}</h1>
-          <Link href={`/purchase/${id}`}><Button className="w-[150px]">Buy Ticket</Button></Link>
-        </div>
-
-        <Link href={`/purchase/${id}`}><Button className="w-full mt-[30px] flex lg:hidden">Buy Ticket</Button></Link>
+        <Link href={`/purchase/${id}`} >
+              <button className="w-full text-[16px] font-bold bg-[#F6A273] py-[15px] rounded-[10px] text-white hover:bg-[#f0b492] cursor-pointer">Beli Tiket</button>
+        </Link>
       </div>
     </div>
   )
